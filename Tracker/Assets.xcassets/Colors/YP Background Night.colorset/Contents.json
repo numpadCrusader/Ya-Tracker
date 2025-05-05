@@ -1,12 +1,6 @@
 {
   "colors" : [
     {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ],
       "color" : {
         "color-space" : "srgb",
         "components" : {
