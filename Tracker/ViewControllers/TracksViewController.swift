@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  TracksViewController.swift
 //  Tracker
 //
 //  Created by Nikita Khon on 05.05.2025.
@@ -7,13 +7,11 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+final class TracksViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        view.backgroundColor = .white
     }
-
-
 }
-
