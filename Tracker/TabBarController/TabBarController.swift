@@ -32,7 +32,7 @@ final class TabBarController: UITabBarController {
             selectedImage: nil
         )
         
-        return viewController
+        return UINavigationController(rootViewController: viewController)
     }
     
     private func makeStatsViewController() -> UIViewController {
