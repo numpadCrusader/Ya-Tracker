@@ -42,7 +42,7 @@ final class TracksViewController: UIViewController {
     // MARK: - Private Methods
     
     private func configure() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         addSubviews()
         addConstraints()
@@ -70,6 +70,10 @@ final class TracksViewController: UIViewController {
         let plus = UIImage(named: "plus_icon")?.withRenderingMode(.alwaysOriginal)
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: plus, style: .plain, target: nil, action: nil)
         
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        
         title = "Трекеры"
         navigationController?.navigationBar.prefersLargeTitles = true
     }
@@ -77,6 +81,7 @@ final class TracksViewController: UIViewController {
     private func setupSearchController() {
         searchController.searchBar.placeholder = "Поиск"
         searchController.searchBar.setValue("Отменить", forKey: "cancelButtonText")
+        searchController.searchBar.tintColor = .ypBlue
         searchController.hidesNavigationBarDuringPresentation = false
         navigationItem.searchController = searchController
     }
