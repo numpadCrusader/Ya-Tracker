@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04735F542DF5FA8900184011 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F532DF5FA8900184011 /* Tracker.swift */; };
+		04735F562DF5FB4200184011 /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F552DF5FB4200184011 /* WeekDay.swift */; };
+		04735F582DF5FBD600184011 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F572DF5FBD600184011 /* TrackerCategory.swift */; };
+		04735F5A2DF5FE5900184011 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F592DF5FE5900184011 /* TrackerRecord.swift */; };
 		04AAFC692DCBA93B007AD0D1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AAFC682DCBA93B007AD0D1 /* TabBarController.swift */; };
 		04AAFC6B2DCBAABD007AD0D1 /* StatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AAFC6A2DCBAABD007AD0D1 /* StatsViewController.swift */; };
 		04AAFC6F2DCBC513007AD0D1 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AAFC6E2DCBC513007AD0D1 /* UIView+Extensions.swift */; };
@@ -18,6 +22,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04735F532DF5FA8900184011 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
+		04735F552DF5FB4200184011 /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
+		04735F572DF5FBD600184011 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
+		04735F592DF5FE5900184011 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
 		04AAFC682DCBA93B007AD0D1 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		04AAFC6A2DCBAABD007AD0D1 /* StatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsViewController.swift; sourceTree = "<group>"; };
 		04AAFC6E2DCBC513007AD0D1 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
@@ -41,6 +49,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		04735F522DF5F8F000184011 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				04735F532DF5FA8900184011 /* Tracker.swift */,
+				04735F552DF5FB4200184011 /* WeekDay.swift */,
+				04735F572DF5FBD600184011 /* TrackerCategory.swift */,
+				04735F592DF5FE5900184011 /* TrackerRecord.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		04AAFC672DCBA8F8007AD0D1 /* TabBarController */ = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +104,7 @@
 		04ADE1BE2DC90E8800B69482 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				04735F522DF5F8F000184011 /* Models */,
 				04AAFC6D2DCBC501007AD0D1 /* Helpers */,
 				04AAFC6C2DCBABC3007AD0D1 /* ViewControllers */,
 				04AAFC672DCBA8F8007AD0D1 /* TabBarController */,
@@ -167,12 +187,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04735F582DF5FBD600184011 /* TrackerCategory.swift in Sources */,
 				04AAFC6F2DCBC513007AD0D1 /* UIView+Extensions.swift in Sources */,
 				04ADE1C42DC90E8800B69482 /* TracksViewController.swift in Sources */,
+				04735F562DF5FB4200184011 /* WeekDay.swift in Sources */,
 				04AAFC692DCBA93B007AD0D1 /* TabBarController.swift in Sources */,
+				04735F5A2DF5FE5900184011 /* TrackerRecord.swift in Sources */,
 				04ADE1C02DC90E8800B69482 /* AppDelegate.swift in Sources */,
 				04AAFC6B2DCBAABD007AD0D1 /* StatsViewController.swift in Sources */,
 				04ADE1C22DC90E8800B69482 /* SceneDelegate.swift in Sources */,
+				04735F542DF5FA8900184011 /* Tracker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
