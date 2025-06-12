@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		045EEC002DF9E9AF00D70774 /* TrackerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045EEBFF2DF9E9AF00D70774 /* TrackerCell.swift */; };
 		04735F542DF5FA8900184011 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F532DF5FA8900184011 /* Tracker.swift */; };
 		04735F562DF5FB4200184011 /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F552DF5FB4200184011 /* WeekDay.swift */; };
 		04735F582DF5FBD600184011 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F572DF5FBD600184011 /* TrackerCategory.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		045EEBFF2DF9E9AF00D70774 /* TrackerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCell.swift; sourceTree = "<group>"; };
 		04735F532DF5FA8900184011 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		04735F552DF5FB4200184011 /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
 		04735F572DF5FBD600184011 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
@@ -49,6 +51,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		045EEBFE2DF9E98A00D70774 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				045EEC012DF9EB0800D70774 /* TrackerCell */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		045EEC012DF9EB0800D70774 /* TrackerCell */ = {
+			isa = PBXGroup;
+			children = (
+				045EEBFF2DF9E9AF00D70774 /* TrackerCell.swift */,
+			);
+			path = TrackerCell;
+			sourceTree = "<group>";
+		};
 		04735F522DF5F8F000184011 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +122,7 @@
 		04ADE1BE2DC90E8800B69482 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				045EEBFE2DF9E98A00D70774 /* Cells */,
 				04735F522DF5F8F000184011 /* Models */,
 				04AAFC6D2DCBC501007AD0D1 /* Helpers */,
 				04AAFC6C2DCBABC3007AD0D1 /* ViewControllers */,
@@ -192,6 +211,7 @@
 				04ADE1C42DC90E8800B69482 /* TracksViewController.swift in Sources */,
 				04735F562DF5FB4200184011 /* WeekDay.swift in Sources */,
 				04AAFC692DCBA93B007AD0D1 /* TabBarController.swift in Sources */,
+				045EEC002DF9E9AF00D70774 /* TrackerCell.swift in Sources */,
 				04735F5A2DF5FE5900184011 /* TrackerRecord.swift in Sources */,
 				04ADE1C02DC90E8800B69482 /* AppDelegate.swift in Sources */,
 				04AAFC6B2DCBAABD007AD0D1 /* StatsViewController.swift in Sources */,
