@@ -139,9 +139,14 @@ final class TracksViewController: UIViewController {
         ])
     }
     
+    @objc func presentA() {
+        let abc = UINavigationController(rootViewController: ScheduleViewController())
+        present(abc, animated: true)
+    }
+    
     private func setupNavBar() {
         let plus = UIImage(named: "plus_icon")?.withRenderingMode(.alwaysOriginal)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: plus, style: .plain, target: nil, action: nil)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: plus, style: .plain, target: self, action: #selector(presentA))
         
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
@@ -191,7 +196,25 @@ extension TracksViewController: UICollectionViewDataSource {
         
         let trackerModel = categories[indexPath.section].trackers[indexPath.row]
         cell.configure(with: trackerModel)
+        cell.delegate = self
         
         return cell
+    }
+}
+
+// MARK: - TrackerCellDelegate
+
+extension TracksViewController: TrackerCellDelegate {
+    
+    func didTapActionButton(_ cell: TrackerCell) {
+        guard let indexPath = trackerCollectionView.indexPath(for: cell) else {
+            return
+        }
+        
+        let trackerModel = categories[indexPath.section].trackers[indexPath.row]
+//        trackerModel.id
+        
+        cell.setIsDone(true)
+//        trackerCollectionView.reloadItems(at: [indexPath])
     }
 }

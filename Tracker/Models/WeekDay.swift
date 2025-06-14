@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum WeekDay {
+enum WeekDay: CaseIterable {
     case monday
     case tuesday
     case wednesday
@@ -15,4 +15,16 @@ enum WeekDay {
     case friday
     case saturday
     case sunday
+    
+    var name: String {
+        switch self {
+            case .monday: "Понедельник"
+            case .tuesday: "Вторник"
+            case .wednesday: "Среда"
+            case .thursday: "Четверг"
+            case .friday: "Пятница"
+            case .saturday: "Суббота"
+            case .sunday: "Воскресенье"
+        }
+    }
 }

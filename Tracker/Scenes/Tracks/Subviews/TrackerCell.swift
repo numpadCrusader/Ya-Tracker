@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol TrackerCellDelegate: AnyObject {
+    func didTapActionButton(_ cell: TrackerCell)
+}
+
 final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Visual Components
@@ -59,15 +63,17 @@ final class TrackerCell: UICollectionViewCell {
     
     private lazy var actionButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(.trackerCellDoneIcon, for: .normal)
+        button.setImage(.trackerCellPlusIcon, for: .normal)
         button.imageView?.contentMode = .center
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(actionButtonTapped(_:)), for: .touchUpInside)
         return button
     }()
     
     // MARK: - Public Properties
     
     static let identifier = "TrackerCell"
+    weak var delegate: TrackerCellDelegate?
     
     // MARK: - Initializers
     
@@ -87,6 +93,17 @@ final class TrackerCell: UICollectionViewCell {
         emojiLabel.text = viewModel.emoji
         titleLabel.text = viewModel.title
         actionButton.tintColor = viewModel.color
+    }
+    
+    func setIsDone(_ isDone: Bool) {
+        let buttonImage: UIImage = isDone ? .trackerCellDoneIcon : .trackerCellPlusIcon
+        actionButton.setImage(buttonImage, for: .normal)
+    }
+    
+    // MARK: - Actions
+    
+    @objc private func actionButtonTapped(_ sender: UIButton) {
+        delegate?.didTapActionButton(self)
     }
     
     // MARK: - Private Methods
