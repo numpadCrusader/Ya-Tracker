@@ -88,7 +88,7 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func configure(with viewModel: Tracker) {
+    func update(with viewModel: Tracker) {
         trackerCardView.backgroundColor = viewModel.color
         emojiLabel.text = viewModel.emoji
         titleLabel.text = viewModel.title

@@ -195,7 +195,7 @@ extension TracksViewController: UICollectionViewDataSource {
         }
         
         let trackerModel = categories[indexPath.section].trackers[indexPath.row]
-        cell.configure(with: trackerModel)
+        cell.update(with: trackerModel)
         cell.delegate = self
         
         return cell

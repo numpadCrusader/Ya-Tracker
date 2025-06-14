@@ -29,6 +29,7 @@ final class ScheduleViewController: UIViewController {
         let button = UIButton(type: .custom)
         button.setTitle("Готово", for: .normal)
         button.setTitleColor(.ypWhite, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .ypBlack
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
@@ -95,7 +96,7 @@ extension ScheduleViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.configure(with: weekDays[indexPath.row])
+        cell.update(with: weekDays[indexPath.row])
         return cell
     }
 }
