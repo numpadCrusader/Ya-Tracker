@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol TrackDetailsDelegate: AnyObject {
+    func didFinishAddingTrack()
+}
+
 final class TrackDetailsViewController: UIViewController {
     
     // MARK: - Visual Components
@@ -32,6 +36,7 @@ final class TrackDetailsViewController: UIViewController {
     private lazy var trackerDetailsTableView: AutoHeightTableView = {
         let tableView = AutoHeightTableView()
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(TrackDetailCell.self, forCellReuseIdentifier: TrackDetailCell.identifier)
         tableView.rowHeight = 75
         tableView.separatorStyle = .none
@@ -60,6 +65,7 @@ final class TrackDetailsViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.layer.borderWidth = 1
         button.layer.borderColor = redColor.cgColor
+        button.addTarget(self, action: #selector(cancelCreateButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -71,9 +77,14 @@ final class TrackDetailsViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(cancelCreateButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    // MARK: - Private Properties
+    
+    weak var delegate: TrackDetailsDelegate?
     
     // MARK: - Private Properties
     
@@ -98,6 +109,12 @@ final class TrackDetailsViewController: UIViewController {
         super.viewDidLoad()
         configure()
         trackerDetailsTableView.reloadData()
+    }
+    
+    // MARK: - Actions
+    
+    @objc private func cancelCreateButtonTapped() {
+        delegate?.didFinishAddingTrack()
     }
     
     // MARK: - Private Methods
@@ -140,6 +157,11 @@ final class TrackDetailsViewController: UIViewController {
             botButtonStackView.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
+    
+    private func routeToSchedule() {
+        let navController = UINavigationController(rootViewController: ScheduleViewController())
+        present(navController, animated: true)
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -163,5 +185,18 @@ extension TrackDetailsViewController: UITableViewDataSource {
             isLast: indexPath.row == trackerDetails.count - 1)
         
         return cell
+    }
+}
+
+// MARK: - UITableViewDataSource
+
+extension TrackDetailsViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        if trackerDetails[indexPath.row] == .schedule {
+            routeToSchedule()
+        }
     }
 }

@@ -47,16 +47,18 @@ final class AddTrackViewController: UIViewController {
     // MARK: - Actions
     
     @objc private func newHabbitButtonTapped(_ sender: UIButton) {
-        let navController = UINavigationController(
-            rootViewController: TrackDetailsViewController(trackerType: .habbit))
+        let viewController = TrackDetailsViewController(trackerType: .habbit)
+        viewController.delegate = self
         
+        let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
     }
     
     @objc private func newTaskButtonTapped(_ sender: UIButton) {
-        let navController = UINavigationController(
-            rootViewController: TrackDetailsViewController(trackerType: .task))
+        let viewController = TrackDetailsViewController(trackerType: .task)
+        viewController.delegate = self
         
+        let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
     }
     
@@ -88,5 +90,14 @@ final class AddTrackViewController: UIViewController {
             newTaskButton.trailingAnchor.constraint(equalTo: newHabbitButton.trailingAnchor),
             newTaskButton.heightAnchor.constraint(equalTo: newHabbitButton.heightAnchor)
         ])
+    }
+}
+
+// MARK: - TrackDetailsViewControllerDelegate
+
+extension AddTrackViewController: TrackDetailsDelegate {
+    
+    func didFinishAddingTrack() {
+        presentingViewController?.dismiss(animated: true)
     }
 }
