@@ -49,7 +49,18 @@ final class ScheduleViewController: UIViewController {
     // MARK: - Private Properties
     
     private let weekDays = WeekDay.allCases
-    private var chosenWeekDays: Set<WeekDay> = []
+    private var chosenWeekDays: Set<WeekDay>
+    
+    // MARK: - Initializers
+    
+    init(chosenWeekDays: Set<WeekDay> = []) {
+        self.chosenWeekDays = chosenWeekDays
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - UIViewController
     
@@ -113,7 +124,10 @@ extension ScheduleViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.update(with: weekDays[indexPath.row])
+        let day = weekDays[indexPath.row]
+        let isOn = chosenWeekDays.contains(day)
+        
+        cell.update(with: day, isOn: isOn)
         cell.delegate = self
         
         return cell
@@ -125,7 +139,10 @@ extension ScheduleViewController: UITableViewDataSource {
 extension ScheduleViewController: ScheduleCellDelegate {
     
     func didToggleSwitch(for cell: ScheduleCell, isOn: Bool) {
-        guard let indexPath = daysTableView.indexPath(for: cell) else {
+        guard 
+            let indexPath = daysTableView.indexPath(for: cell),
+            indexPath.row < weekDays.count
+        else {
             return
         }
         

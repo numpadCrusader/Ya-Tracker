@@ -58,8 +58,9 @@ final class ScheduleCell: UITableViewCell {
     
     // MARK: - Public Methods
     
-    func update(with day: WeekDay) {
+    func update(with day: WeekDay, isOn: Bool) {
         dayLabel.text = day.name
+        daySwitch.isOn = isOn
         
         botSeparatorView.isHidden = day == .sunday ? true : false
         

@@ -187,7 +187,7 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     private func routeToSchedule() {
-        let viewController = ScheduleViewController()
+        let viewController = ScheduleViewController(chosenWeekDays: chosenWeekDays)
         viewController.delegate = self
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
@@ -195,7 +195,7 @@ final class TrackDetailsViewController: UIViewController {
     
     private func updateButtonState() {
         let hasTrackTitle = !(trackTitleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true)
-        let hasChosenWeekDays = !chosenWeekDays.isEmpty
+        let hasChosenWeekDays = trackerType == .task ? true : !chosenWeekDays.isEmpty
         let isEnabled = hasTrackTitle && hasChosenWeekDays
         
         createButton.isEnabled = isEnabled
@@ -219,9 +219,15 @@ extension TrackDetailsViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        let trackerDetail = trackerDetails[indexPath.row]
+        
         cell.update(
-            with: trackerDetails[indexPath.row],
+            with: trackerDetail,
             isLast: indexPath.row == trackerDetails.count - 1)
+        
+        if trackerDetail == .category {
+            cell.setDetailSubtitle(chosenCategory)
+        }
         
         return cell
     }

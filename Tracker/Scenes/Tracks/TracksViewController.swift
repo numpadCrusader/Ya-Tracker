@@ -138,9 +138,20 @@ final class TracksViewController: UIViewController {
     }
     
     private func reloadCollectionView() {
+        let completedTrackerIDs = Set(completedTrackers.map { $0.trackerId })
+        let currentWeekDay = currentDate.weekDay
+        
         let filteredCategories = categories.compactMap { category -> TrackerCategory? in
-            let filteredTrackers = category.trackers.filter { $0.schedule.contains(currentDate.weekDay) }
-            return filteredTrackers.isEmpty ? nil : .init(title: category.title, trackers: filteredTrackers)
+            let combinedTrackers = category.trackers.filter { tracker in
+                if tracker.schedule.isEmpty {
+                    return !completedTrackerIDs.contains(tracker.id)
+                }
+
+                return tracker.schedule.contains(currentWeekDay)
+            }
+
+            return combinedTrackers.isEmpty ? nil
+            : TrackerCategory(title: category.title, trackers: combinedTrackers)
         }
         
         visibleCategories = filteredCategories
@@ -199,23 +210,22 @@ extension TracksViewController: TrackerCellDelegate {
         guard
             let indexPath = trackerCollectionView.indexPath(for: cell),
             indexPath.section < visibleCategories.count,
-            indexPath.row < visibleCategories[indexPath.section].trackers.count
+            indexPath.row < visibleCategories[indexPath.section].trackers.count,
+            currentDate <= Date().dateOnly
         else {
             return
         }
         
         let trackerModel = visibleCategories[indexPath.section].trackers[indexPath.row]
         let trackerRecord = TrackerRecord(trackerId: trackerModel.id, date: currentDate)
-        let isTrackerDone = completedTrackers.contains(trackerRecord)
         
-        if isTrackerDone {
+        if completedTrackers.contains(trackerRecord) {
             completedTrackers.remove(trackerRecord)
         } else {
             completedTrackers.insert(trackerRecord)
         }
         
         trackerCollectionView.reloadItems(at: [indexPath])
-        cell.setIsDone(!isTrackerDone)
     }
 }
 
