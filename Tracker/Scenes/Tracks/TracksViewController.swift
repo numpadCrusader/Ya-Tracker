@@ -105,6 +105,13 @@ final class TracksViewController: UIViewController {
         trackerCollectionView.isHidden = categories.isEmpty
     }
     
+    // MARK: - Actions
+    
+    @objc private func addNewTrackButtonTapped() {
+        let navController = UINavigationController(rootViewController: AddTrackViewController())
+        present(navController, animated: true)
+    }
+    
     // MARK: - Private Methods
     
     private func configure() {
@@ -139,14 +146,12 @@ final class TracksViewController: UIViewController {
         ])
     }
     
-    @objc func presentA() {
-        let abc = UINavigationController(rootViewController: ScheduleViewController())
-        present(abc, animated: true)
-    }
-    
     private func setupNavBar() {
-        let plus = UIImage(named: "plus_icon")?.withRenderingMode(.alwaysOriginal)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: plus, style: .plain, target: self, action: #selector(presentA))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: .plusIcon.withRenderingMode(.alwaysOriginal),
+            style: .plain,
+            target: self,
+            action: #selector(addNewTrackButtonTapped))
         
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date

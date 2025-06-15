@@ -1,17 +1,17 @@
 //
-//  ScheduleCell.swift
+//  TrackDetailCell.swift
 //  Tracker
 //
-//  Created by Nikita Khon on 14.06.2025.
+//  Created by Nikita Khon on 15.06.2025.
 //
 
 import UIKit
 
-final class ScheduleCell: UITableViewCell {
+final class TrackDetailCell: UITableViewCell {
     
     // MARK: - Visual Components
     
-    private lazy var dayLabel: UILabel = {
+    private lazy var detailLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .regular)
         label.textColor = .ypBlack
@@ -19,13 +19,14 @@ final class ScheduleCell: UITableViewCell {
         return label
     }()
     
-    private lazy var daySwitch: UISwitch = {
-        let daySwitch = UISwitch()
-        daySwitch.onTintColor = .ypBlue
-        daySwitch.setContentCompressionResistancePriority(.required, for: .horizontal)
-        daySwitch.setContentHuggingPriority(.required, for: .horizontal)
-        daySwitch.translatesAutoresizingMaskIntoConstraints = false
-        return daySwitch
+    private lazy var chevronImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .chevronRightIcon
+        imageView.contentMode = .center
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     private lazy var botSeparatorView: UIView = {
@@ -37,7 +38,7 @@ final class ScheduleCell: UITableViewCell {
     
     // MARK: - Public Properties
     
-    static let identifier = "ScheduleCell"
+    static let identifier = "TrackDetailCell"
     
     // MARK: - Initializers
     
@@ -52,42 +53,35 @@ final class ScheduleCell: UITableViewCell {
     
     // MARK: - Public Methods
     
-    func update(with day: WeekDay) {
-        dayLabel.text = day.name
+    func update(with detail: TrackerType.Detail, isLast: Bool) {
+        detailLabel.text = detail.title
         
-        botSeparatorView.isHidden = day == .sunday ? true : false
-        
-        contentView.layer.maskedCorners = switch day {
-            case .monday: [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-            case .sunday: [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-            default: []
-        }
+        botSeparatorView.isHidden = isLast ? true : false
     }
     
     // MARK: - Private Methods
     
     private func configure() {
         contentView.backgroundColor = .ypBackgroundDay
-        contentView.layer.cornerRadius = 16
         
         addSubviews()
         addConstraints()
     }
     
     private func addSubviews() {
-        contentView.addSubviews(dayLabel, daySwitch, botSeparatorView)
+        contentView.addSubviews(detailLabel, chevronImageView, botSeparatorView)
     }
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            dayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            dayLabel.trailingAnchor.constraint(equalTo: daySwitch.leadingAnchor, constant: -16),
-            dayLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            detailLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            detailLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -1),
+            detailLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            daySwitch.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            daySwitch.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            chevronImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            chevronImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([
