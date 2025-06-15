@@ -179,7 +179,12 @@ extension TracksViewController: UICollectionViewDataSource {
         }
         
         let trackerModel = visibleCategories[indexPath.section].trackers[indexPath.row]
-        cell.update(with: trackerModel)
+        let trackerRecords = completedTrackers.filter { $0.trackerId == trackerModel.id }
+        let isDoneToday = trackerRecords.contains { $0.date == currentDate }
+        let streakCount = trackerRecords.count
+        
+        cell.update(with: trackerModel, and: streakCount)
+        cell.setIsDone(isDoneToday)
         cell.delegate = self
         
         return cell
@@ -209,6 +214,7 @@ extension TracksViewController: TrackerCellDelegate {
             completedTrackers.insert(trackerRecord)
         }
         
+        trackerCollectionView.reloadItems(at: [indexPath])
         cell.setIsDone(!isTrackerDone)
     }
 }

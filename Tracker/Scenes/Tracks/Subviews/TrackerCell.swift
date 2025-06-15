@@ -57,7 +57,6 @@ final class TrackerCell: UICollectionViewCell {
         label.textColor = .ypBlack
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "1 день"
         return label
     }()
     
@@ -88,10 +87,11 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Public Methods
     
-    func update(with viewModel: Tracker) {
+    func update(with viewModel: Tracker, and streakCount: Int) {
         trackerCardView.backgroundColor = viewModel.color
         emojiLabel.text = viewModel.emoji
         titleLabel.text = viewModel.title
+        streakLabel.text = makeStreakLabelText(from: streakCount)
         actionButton.tintColor = viewModel.color
     }
     
@@ -153,5 +153,20 @@ final class TrackerCell: UICollectionViewCell {
             actionButton.topAnchor.constraint(equalTo: trackerCardView.bottomAnchor, constant: 8),
             actionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12)
         ])
+    }
+    
+    private func makeStreakLabelText(from number: Int) -> String {
+        let suffix =
+        switch number % 100 {
+            case 11...14: "дней"
+                
+            default: switch number % 10 {
+                case 1: "день"
+                case 2...4: "дня"
+                default: "дней"
+            }
+        }
+        
+        return "\(number) \(suffix)"
     }
 }
