@@ -41,12 +41,13 @@ final class TracksViewController: UIViewController {
         return collectionView
     }()
     
+    private let searchController = UISearchController(searchResultsController: nil)
+    
     // MARK: - Private Properties
     
     private var categories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord] = []
-    
-    private let searchController = UISearchController(searchResultsController: nil)
+    private var completedTrackers: Set<TrackerRecord> = []
+    private var currentDate = Date()
     
     // MARK: - UIViewController
     
@@ -173,15 +174,25 @@ extension TracksViewController: UICollectionViewDataSource {
 extension TracksViewController: TrackerCellDelegate {
     
     func didTapActionButton(_ cell: TrackerCell) {
-        guard let indexPath = trackerCollectionView.indexPath(for: cell) else {
+        guard
+            let indexPath = trackerCollectionView.indexPath(for: cell),
+            indexPath.section < categories.count,
+            indexPath.row < categories[indexPath.section].trackers.count
+        else {
             return
         }
         
         let trackerModel = categories[indexPath.section].trackers[indexPath.row]
-//        trackerModel.id
+        let trackerRecord = TrackerRecord(trackerId: trackerModel.id, date: currentDate.dateOnly)
+        let isTrackerDone = completedTrackers.contains(trackerRecord)
         
-        cell.setIsDone(true)
-//        trackerCollectionView.reloadItems(at: [indexPath])
+        if isTrackerDone {
+            completedTrackers.remove(trackerRecord)
+        } else {
+            completedTrackers.insert(trackerRecord)
+        }
+        
+        cell.setIsDone(!isTrackerDone)
     }
 }
 
