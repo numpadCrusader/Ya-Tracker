@@ -16,13 +16,25 @@ final class TrackDetailsViewController: UIViewController {
     
     // MARK: - Visual Components
     
+    private lazy var headerStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
     private lazy var trackTitleTextField: PaddedTextField = {
+        let trailingImageView = UIImageView(image: .xIcon)
+        trailingImageView.contentMode = .center
+        
         let grayColor: UIColor = .ypGray
         let attributedPlaceholder = NSAttributedString(
             string: "Введите название трекера",
             attributes: [.foregroundColor: grayColor])
         
         let textField = PaddedTextField()
+        textField.delegate = self
         textField.attributedPlaceholder = attributedPlaceholder
         textField.backgroundColor = .ypBackgroundDay
         textField.tintColor = .ypBlue
@@ -30,9 +42,22 @@ final class TrackDetailsViewController: UIViewController {
         textField.font = .systemFont(ofSize: 17)
         textField.layer.cornerRadius = 16
         textField.clipsToBounds = true
+        textField.rightView = trailingImageView
+        textField.rightViewMode = .whileEditing
         textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
+    }()
+    
+    private lazy var warningLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypRed
+        label.text = "Ограничение 38 символов"
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 17, weight: .regular)
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
     
     private lazy var trackerDetailsTableView: AutoHeightTableView = {
@@ -156,24 +181,25 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubviews(
-            trackTitleTextField,
-            trackerDetailsTableView,
-            botButtonStackView)
+        view.addSubviews(headerStackView, trackerDetailsTableView, botButtonStackView)
         
+        headerStackView.addArrangedSubviews(trackTitleTextField, warningLabel)
         botButtonStackView.addArrangedSubviews(cancelButton, createButton)
     }
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            trackTitleTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            trackTitleTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            trackTitleTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            headerStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            headerStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            headerStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+        
+        NSLayoutConstraint.activate([
             trackTitleTextField.heightAnchor.constraint(equalToConstant: 75)
         ])
         
         NSLayoutConstraint.activate([
-            trackerDetailsTableView.topAnchor.constraint(equalTo: trackTitleTextField.bottomAnchor, constant: 24),
+            trackerDetailsTableView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor, constant: 24),
             trackerDetailsTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             trackerDetailsTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
@@ -200,6 +226,16 @@ final class TrackDetailsViewController: UIViewController {
         
         createButton.isEnabled = isEnabled
         createButton.backgroundColor = isEnabled ? .ypBlack : .ypGray
+    }
+    
+    private func isWarningLabelHidden(_ isHidden: Bool) {
+        if warningLabel.isHidden == isHidden {
+            return
+        }
+        
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.warningLabel.isHidden = isHidden
+        }
     }
 }
 
@@ -272,5 +308,25 @@ extension TrackDetailsViewController: ScheduleDelegate {
             .filter { days.contains($0) }
             .map { $0.shortName }
             .joined(separator: ", ")
+    }
+}
+
+// MARK: - UITextFieldDelegate
+
+extension TrackDetailsViewController: UITextFieldDelegate {
+    
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        let currentText = textField.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        let isAllowedToType = updatedText.count <= 38
+        isWarningLabelHidden(isAllowedToType)
+        
+        return isAllowedToType
     }
 }
