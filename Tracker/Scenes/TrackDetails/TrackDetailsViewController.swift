@@ -78,6 +78,7 @@ final class TrackDetailsViewController: UIViewController {
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(cancelCreateButtonTapped), for: .touchUpInside)
+        button.isEnabled = false
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -90,6 +91,7 @@ final class TrackDetailsViewController: UIViewController {
     
     private let trackerType: TrackerType
     private let trackerDetails: [TrackerType.Detail]
+    private var chosenWeekDays: Set<WeekDay> = []
 
     // MARK: - Initializers
     
@@ -159,7 +161,9 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     private func routeToSchedule() {
-        let navController = UINavigationController(rootViewController: ScheduleViewController())
+        let viewController = ScheduleViewController()
+        viewController.delegate = self
+        let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
     }
 }
@@ -198,5 +202,34 @@ extension TrackDetailsViewController: UITableViewDelegate {
         if trackerDetails[indexPath.row] == .schedule {
             routeToSchedule()
         }
+    }
+}
+
+// MARK: - ScheduleDelegate
+
+extension TrackDetailsViewController: ScheduleDelegate {
+    
+    func didFinish(with days: Set<WeekDay>) {
+        chosenWeekDays = days
+        
+        guard 
+            let index = trackerDetails.firstIndex(where: { $0 == .schedule}),
+            let cell = trackerDetailsTableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TrackDetailCell
+        else {
+            return
+        }
+        
+        cell.setDetailSubtitle(makeChosenDaysString(from: days))
+    }
+    
+    private func makeChosenDaysString(from days: Set<WeekDay>) -> String {
+        if days == Set(WeekDay.allCases) {
+            return "Каждый день"
+        }
+        
+        return WeekDay.allCases
+            .filter { days.contains($0) }
+            .map { $0.shortName }
+            .joined(separator: ", ")
     }
 }

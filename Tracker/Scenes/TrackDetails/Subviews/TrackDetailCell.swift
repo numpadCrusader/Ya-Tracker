@@ -11,10 +11,18 @@ final class TrackDetailCell: UITableViewCell {
     
     // MARK: - Visual Components
     
-    private lazy var detailLabel: UILabel = {
+    private lazy var detailTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .regular)
         label.textColor = .ypBlack
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var detailSubtitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 17, weight: .regular)
+        label.textColor = .ypGray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -54,9 +62,13 @@ final class TrackDetailCell: UITableViewCell {
     // MARK: - Public Methods
     
     func update(with detail: TrackerType.Detail, isLast: Bool) {
-        detailLabel.text = detail.title
+        detailTitleLabel.text = detail.title
         
         botSeparatorView.isHidden = isLast ? true : false
+    }
+    
+    func setDetailSubtitle(_ subtitle: String) {
+        detailSubtitleLabel.text = subtitle
     }
     
     // MARK: - Private Methods
@@ -69,14 +81,24 @@ final class TrackDetailCell: UITableViewCell {
     }
     
     private func addSubviews() {
-        contentView.addSubviews(detailLabel, chevronImageView, botSeparatorView)
+        contentView.addSubviews(
+            detailTitleLabel,
+            detailSubtitleLabel,
+            chevronImageView,
+            botSeparatorView)
     }
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            detailLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            detailLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -1),
-            detailLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            detailTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            detailTitleLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -16),
+            detailTitleLabel.bottomAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -1)
+        ])
+        
+        NSLayoutConstraint.activate([
+            detailSubtitleLabel.leadingAnchor.constraint(equalTo: detailTitleLabel.leadingAnchor),
+            detailSubtitleLabel.trailingAnchor.constraint(equalTo: detailTitleLabel.trailingAnchor),
+            detailSubtitleLabel.topAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 1)
         ])
         
         NSLayoutConstraint.activate([

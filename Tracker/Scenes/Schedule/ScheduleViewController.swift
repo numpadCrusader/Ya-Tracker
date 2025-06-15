@@ -63,6 +63,7 @@ final class ScheduleViewController: UIViewController {
     
     @objc private func confirmButtonTapped() {
         delegate?.didFinish(with: chosenWeekDays)
+        dismiss(animated: true)
     }
     
     // MARK: - Private Methods

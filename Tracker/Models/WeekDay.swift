@@ -27,4 +27,16 @@ enum WeekDay: CaseIterable {
             case .sunday: "Воскресенье"
         }
     }
+    
+    var shortName: String {
+        switch self {
+            case .monday: "Пн"
+            case .tuesday: "Вт"
+            case .wednesday: "Ср"
+            case .thursday: "Чт"
+            case .friday: "Пт"
+            case .saturday: "Сб"
+            case .sunday: "Вс"
+        }
+    }
 }
