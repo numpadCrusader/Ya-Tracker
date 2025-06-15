@@ -41,13 +41,22 @@ final class TracksViewController: UIViewController {
         return collectionView
     }()
     
+    private lazy var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+        return datePicker
+    }()
+    
     private let searchController = UISearchController(searchResultsController: nil)
     
     // MARK: - Private Properties
     
     private var categories: [TrackerCategory] = []
+    private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
-    private var currentDate = Date()
+    private var currentDate = Date().dateOnly
     
     // MARK: - UIViewController
     
@@ -64,6 +73,11 @@ final class TracksViewController: UIViewController {
         viewController.delegate = self
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
+    }
+    
+    @objc private func dateChanged(_ sender: UIDatePicker) {
+        currentDate = sender.date.dateOnly
+        reloadCollectionView()
     }
     
     // MARK: - Private Methods
@@ -107,9 +121,6 @@ final class TracksViewController: UIViewController {
             target: self,
             action: #selector(addNewTrackButtonTapped))
         
-        let datePicker = UIDatePicker()
-        datePicker.datePickerMode = .date
-        datePicker.preferredDatePickerStyle = .compact
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
         title = "Трекеры"
@@ -127,11 +138,17 @@ final class TracksViewController: UIViewController {
     }
     
     private func reloadCollectionView() {
+        let filteredCategories = categories.compactMap { category -> TrackerCategory? in
+            let filteredTrackers = category.trackers.filter { $0.schedule.contains(currentDate.weekDay) }
+            return filteredTrackers.isEmpty ? nil : .init(title: category.title, trackers: filteredTrackers)
+        }
+        
+        visibleCategories = filteredCategories
         trackerCollectionView.reloadData()
         
-        infoImageView.isHidden = !categories.isEmpty
-        infoLabel.isHidden = !categories.isEmpty
-        trackerCollectionView.isHidden = categories.isEmpty
+        infoImageView.isHidden = !visibleCategories.isEmpty
+        infoLabel.isHidden = !visibleCategories.isEmpty
+        trackerCollectionView.isHidden = visibleCategories.isEmpty
     }
 }
 
@@ -140,14 +157,14 @@ final class TracksViewController: UIViewController {
 extension TracksViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categories.count
+        return visibleCategories.count
     }
     
     func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        return categories[section].trackers.count
+        return visibleCategories[section].trackers.count
     }
     
     func collectionView(
@@ -161,7 +178,7 @@ extension TracksViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        let trackerModel = categories[indexPath.section].trackers[indexPath.row]
+        let trackerModel = visibleCategories[indexPath.section].trackers[indexPath.row]
         cell.update(with: trackerModel)
         cell.delegate = self
         
@@ -176,14 +193,14 @@ extension TracksViewController: TrackerCellDelegate {
     func didTapActionButton(_ cell: TrackerCell) {
         guard
             let indexPath = trackerCollectionView.indexPath(for: cell),
-            indexPath.section < categories.count,
-            indexPath.row < categories[indexPath.section].trackers.count
+            indexPath.section < visibleCategories.count,
+            indexPath.row < visibleCategories[indexPath.section].trackers.count
         else {
             return
         }
         
-        let trackerModel = categories[indexPath.section].trackers[indexPath.row]
-        let trackerRecord = TrackerRecord(trackerId: trackerModel.id, date: currentDate.dateOnly)
+        let trackerModel = visibleCategories[indexPath.section].trackers[indexPath.row]
+        let trackerRecord = TrackerRecord(trackerId: trackerModel.id, date: currentDate)
         let isTrackerDone = completedTrackers.contains(trackerRecord)
         
         if isTrackerDone {

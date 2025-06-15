@@ -10,6 +10,10 @@ import Foundation
 extension Date {
     
     var dateOnly: Date {
-        return Calendar.current.startOfDay(for: self)
+        Calendar.current.startOfDay(for: self)
+    }
+    
+    var weekDay: WeekDay {
+        WeekDay.from(date: self)
     }
 }

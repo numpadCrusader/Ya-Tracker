@@ -40,3 +40,20 @@ enum WeekDay: CaseIterable {
         }
     }
 }
+
+extension WeekDay {
+    
+    static func from(date: Date) -> WeekDay {
+        let weekdayNumber = Calendar.current.component(.weekday, from: date)
+        let mapping: [Int: WeekDay] = [
+            1: .sunday,
+            2: .monday,
+            3: .tuesday,
+            4: .wednesday,
+            5: .thursday,
+            6: .friday,
+            7: .saturday
+        ]
+        return mapping[weekdayNumber] ?? .monday
+    }
+}
