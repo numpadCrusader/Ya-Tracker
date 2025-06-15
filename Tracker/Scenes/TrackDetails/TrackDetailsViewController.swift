@@ -8,7 +8,8 @@
 import UIKit
 
 protocol TrackDetailsDelegate: AnyObject {
-    func didFinishAddingTrack()
+    func didCancelAddingTrack()
+    func didFinishAddingTrack(_ trackerCategory: TrackerCategory)
 }
 
 final class TrackDetailsViewController: UIViewController {
@@ -66,7 +67,7 @@ final class TrackDetailsViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.layer.borderWidth = 1
         button.layer.borderColor = redColor.cgColor
-        button.addTarget(self, action: #selector(cancelCreateButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -78,7 +79,7 @@ final class TrackDetailsViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
-        button.addTarget(self, action: #selector(cancelCreateButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         button.isEnabled = false
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -122,8 +123,22 @@ final class TrackDetailsViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc private func cancelCreateButtonTapped() {
-        delegate?.didFinishAddingTrack()
+    @objc private func cancelButtonTapped() {
+        delegate?.didCancelAddingTrack()
+    }
+    
+    @objc private func createButtonTapped() {
+        let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
+        
+        let tracker = Tracker(
+            id: UUID(),
+            title: trackTitle,
+            color: .systemIndigo,
+            emoji: "🤖",
+            schedule: chosenWeekDays)
+        
+        let trackerCategory = TrackerCategory(title: chosenCategory, trackers: [tracker])
+        delegate?.didFinishAddingTrack(trackerCategory)
     }
     
     @objc private func textFieldDidChange() {

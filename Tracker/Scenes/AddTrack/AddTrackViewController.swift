@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol AddTrackViewControllerDelegate: AnyObject {
+    func didCancelAddingTrack()
+    func didFinishAddingTrack(_ newTrackerCategory: TrackerCategory)
+}
+
 final class AddTrackViewController: UIViewController {
     
     // MARK: - Visual Components
@@ -36,6 +41,10 @@ final class AddTrackViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    // MARK: - Public Properties
+    
+    weak var delegate: AddTrackViewControllerDelegate?
     
     // MARK: - UIViewController
     
@@ -97,7 +106,11 @@ final class AddTrackViewController: UIViewController {
 
 extension AddTrackViewController: TrackDetailsDelegate {
     
-    func didFinishAddingTrack() {
-        presentingViewController?.dismiss(animated: true)
+    func didCancelAddingTrack() {
+        delegate?.didCancelAddingTrack()
+    }
+    
+    func didFinishAddingTrack(_ trackerCategory: TrackerCategory) {
+        delegate?.didFinishAddingTrack(trackerCategory)
     }
 }

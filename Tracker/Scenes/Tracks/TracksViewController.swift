@@ -43,52 +43,7 @@ final class TracksViewController: UIViewController {
     
     // MARK: - Private Properties
     
-    private var categories: [TrackerCategory] = [
-        .init(
-            title: "Whatever",
-            trackers: [
-                .init(
-                    id: UUID(),
-                    title: "Поливать растения",
-                    color: .systemGreen,
-                    emoji: "🔥",
-                    schedule: .init()
-                ),
-                .init(
-                    id: UUID(),
-                    title: "Поливать растения",
-                    color: .systemGreen,
-                    emoji: "🔥",
-                    schedule: .init()
-                )
-            ]
-        ),
-        .init(
-            title: "Whatever",
-            trackers: [
-                .init(
-                    id: UUID(),
-                    title: "Кошка заслонила камеру на созвоне",
-                    color: .systemOrange,
-                    emoji: "🔥",
-                    schedule: .init()
-                )
-            ]
-        ),
-        .init(
-            title: "Whatever",
-            trackers: [
-                .init(
-                    id: UUID(),
-                    title: "Бабушка прислала открытку в вотсапе",
-                    color: .systemTeal,
-                    emoji: "🔥",
-                    schedule: .init()
-                )
-            ]
-        )
-    ]
-    
+    private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     
     private let searchController = UISearchController(searchResultsController: nil)
@@ -98,17 +53,15 @@ final class TracksViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
-        trackerCollectionView.reloadData()
-        
-        infoImageView.isHidden = !categories.isEmpty
-        infoLabel.isHidden = !categories.isEmpty
-        trackerCollectionView.isHidden = categories.isEmpty
+        reloadCollectionView()
     }
     
     // MARK: - Actions
     
     @objc private func addNewTrackButtonTapped() {
-        let navController = UINavigationController(rootViewController: AddTrackViewController())
+        let viewController = AddTrackViewController()
+        viewController.delegate = self
+        let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
     }
     
@@ -171,6 +124,14 @@ final class TracksViewController: UIViewController {
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
+    
+    private func reloadCollectionView() {
+        trackerCollectionView.reloadData()
+        
+        infoImageView.isHidden = !categories.isEmpty
+        infoLabel.isHidden = !categories.isEmpty
+        trackerCollectionView.isHidden = categories.isEmpty
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -221,5 +182,32 @@ extension TracksViewController: TrackerCellDelegate {
         
         cell.setIsDone(true)
 //        trackerCollectionView.reloadItems(at: [indexPath])
+    }
+}
+
+// MARK: - AddTrackViewControllerDelegate
+
+extension TracksViewController: AddTrackViewControllerDelegate {
+    
+    func didCancelAddingTrack() {
+        dismiss(animated: true)
+    }
+    
+    func didFinishAddingTrack(_ newTrackerCategory: TrackerCategory) {
+        if let oldCategory = categories.first(where: { $0.title == newTrackerCategory.title }) {
+            let mergedCategory = TrackerCategory(
+                title: oldCategory.title,
+                trackers: oldCategory.trackers + newTrackerCategory.trackers)
+            
+            var updatedCategories = categories.filter { $0.title != oldCategory.title }
+            updatedCategories.append(mergedCategory)
+            categories = updatedCategories
+        } else {
+            let updatedCategories = categories + [newTrackerCategory]
+            categories = updatedCategories
+        }
+        
+        reloadCollectionView()
+        dismiss(animated: true)
     }
 }
