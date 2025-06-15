@@ -29,6 +29,7 @@ final class TrackDetailsViewController: UIViewController {
         textField.font = .systemFont(ofSize: 17)
         textField.layer.cornerRadius = 16
         textField.clipsToBounds = true
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
@@ -91,7 +92,13 @@ final class TrackDetailsViewController: UIViewController {
     
     private let trackerType: TrackerType
     private let trackerDetails: [TrackerType.Detail]
-    private var chosenWeekDays: Set<WeekDay> = []
+    
+    private var chosenCategory: String = "Тестовая категория"
+    private var chosenWeekDays: Set<WeekDay> = [] {
+        didSet {
+            updateButtonState()
+        }
+    }
 
     // MARK: - Initializers
     
@@ -117,6 +124,10 @@ final class TrackDetailsViewController: UIViewController {
     
     @objc private func cancelCreateButtonTapped() {
         delegate?.didFinishAddingTrack()
+    }
+    
+    @objc private func textFieldDidChange() {
+        updateButtonState()
     }
     
     // MARK: - Private Methods
@@ -165,6 +176,15 @@ final class TrackDetailsViewController: UIViewController {
         viewController.delegate = self
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
+    }
+    
+    private func updateButtonState() {
+        let hasTrackTitle = !(trackTitleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true)
+        let hasChosenWeekDays = !chosenWeekDays.isEmpty
+        let isEnabled = hasTrackTitle && hasChosenWeekDays
+        
+        createButton.isEnabled = isEnabled
+        createButton.backgroundColor = isEnabled ? .ypBlack : .ypGray
     }
 }
 
