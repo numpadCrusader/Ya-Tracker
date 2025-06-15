@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ScheduleCellDelegate: AnyObject {
+    func didToggleSwitch(for cell: ScheduleCell, isOn: Bool)
+}
+
 final class ScheduleCell: UITableViewCell {
     
     // MARK: - Visual Components
@@ -25,6 +29,7 @@ final class ScheduleCell: UITableViewCell {
         daySwitch.setContentCompressionResistancePriority(.required, for: .horizontal)
         daySwitch.setContentHuggingPriority(.required, for: .horizontal)
         daySwitch.translatesAutoresizingMaskIntoConstraints = false
+        daySwitch.addTarget(self, action: #selector(switchToggled(_:)), for: .valueChanged)
         return daySwitch
     }()
     
@@ -38,6 +43,7 @@ final class ScheduleCell: UITableViewCell {
     // MARK: - Public Properties
     
     static let identifier = "ScheduleCell"
+    weak var delegate: ScheduleCellDelegate?
     
     // MARK: - Initializers
     
@@ -62,6 +68,12 @@ final class ScheduleCell: UITableViewCell {
             case .sunday: [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
             default: []
         }
+    }
+    
+    // MARK: - Actions
+    
+    @objc private func switchToggled(_ sender: UISwitch) {
+        delegate?.didToggleSwitch(for: self, isOn: sender.isOn)
     }
     
     // MARK: - Private Methods

@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ScheduleDelegate: AnyObject {
+    func didFinish(with days: Set<WeekDay>)
+}
+
 final class ScheduleViewController: UIViewController {
     
     // MARK: - Visual Components
@@ -33,13 +37,19 @@ final class ScheduleViewController: UIViewController {
         button.backgroundColor = .ypBlack
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
+        button.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
+    // MARK: - Public Properties
+    
+    weak var delegate: ScheduleDelegate?
+    
     // MARK: - Private Properties
     
     private let weekDays = WeekDay.allCases
+    private var chosenWeekDays: Set<WeekDay> = []
     
     // MARK: - UIViewController
     
@@ -47,6 +57,12 @@ final class ScheduleViewController: UIViewController {
         super.viewDidLoad()
         configure()
         daysTableView.reloadData()
+    }
+    
+    // MARK: - Private Methods
+    
+    @objc private func confirmButtonTapped() {
+        delegate?.didFinish(with: chosenWeekDays)
     }
     
     // MARK: - Private Methods
@@ -97,6 +113,25 @@ extension ScheduleViewController: UITableViewDataSource {
         }
         
         cell.update(with: weekDays[indexPath.row])
+        cell.delegate = self
+        
         return cell
+    }
+}
+
+// MARK: - ScheduleCellDelegate
+
+extension ScheduleViewController: ScheduleCellDelegate {
+    
+    func didToggleSwitch(for cell: ScheduleCell, isOn: Bool) {
+        guard let indexPath = daysTableView.indexPath(for: cell) else {
+            return
+        }
+        
+        let day = weekDays[indexPath.row]
+        switch (day, isOn) {
+            case (let day, false): chosenWeekDays.remove(day)
+            case (let day, true): chosenWeekDays.insert(day)
+        }
     }
 }
