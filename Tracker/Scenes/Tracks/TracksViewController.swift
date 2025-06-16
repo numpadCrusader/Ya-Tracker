@@ -64,6 +64,13 @@ final class TracksViewController: UIViewController {
     
     private let searchController = UISearchController(searchResultsController: nil)
     
+    private lazy var tabBarSeparatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .tabBarSeparatorBlack
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     // MARK: - Private Properties
     
     private var categories: [TrackerCategory] = []
@@ -105,7 +112,7 @@ final class TracksViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubviews(infoImageView, infoLabel, trackerCollectionView)
+        view.addSubviews(infoImageView, infoLabel, trackerCollectionView, tabBarSeparatorView)
     }
     
     private func addConstraints() {
@@ -113,7 +120,7 @@ final class TracksViewController: UIViewController {
             trackerCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             trackerCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             trackerCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            trackerCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            trackerCollectionView.bottomAnchor.constraint(equalTo: tabBarSeparatorView.topAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -124,6 +131,12 @@ final class TracksViewController: UIViewController {
         NSLayoutConstraint.activate([
             infoLabel.topAnchor.constraint(equalTo: infoImageView.bottomAnchor, constant: 8),
             infoLabel.centerXAnchor.constraint(equalTo: infoImageView.centerXAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            tabBarSeparatorView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tabBarSeparatorView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            tabBarSeparatorView.heightAnchor.constraint(equalToConstant: 0.5)
         ])
     }
     
