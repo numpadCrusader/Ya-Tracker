@@ -25,8 +25,9 @@ final class TrackDetailsViewController: UIViewController {
     }()
     
     private lazy var trackTitleTextField: PaddedTextField = {
-        let trailingImageView = UIImageView(image: .xIcon)
-        trailingImageView.contentMode = .center
+        let trailingButton = UIButton(type: .custom)
+        trailingButton.setImage(.xIcon, for: .normal)
+        trailingButton.addTarget(self, action: #selector(clearText), for: .touchUpInside)
         
         let grayColor: UIColor = .ypGray
         let attributedPlaceholder = NSAttributedString(
@@ -42,8 +43,8 @@ final class TrackDetailsViewController: UIViewController {
         textField.font = .systemFont(ofSize: 17)
         textField.layer.cornerRadius = 16
         textField.clipsToBounds = true
-        textField.rightView = trailingImageView
-        textField.rightViewMode = .whileEditing
+        textField.rightView = trailingButton
+        textField.rightViewMode = .never
         textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
@@ -122,7 +123,7 @@ final class TrackDetailsViewController: UIViewController {
     private var chosenCategory: String = "Тестовая категория"
     private var chosenWeekDays: Set<WeekDay> = [] {
         didSet {
-            updateButtonState()
+            isCreateButtonEnabled()
         }
     }
 
@@ -167,7 +168,14 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     @objc private func textFieldDidChange() {
-        updateButtonState()
+        isCreateButtonEnabled()
+        isClearTextButtonVisible()
+    }
+    
+    @objc func clearText() {
+        trackTitleTextField.text = ""
+        isClearTextButtonVisible()
+        isWarningLabelHidden(true)
     }
     
     // MARK: - Private Methods
@@ -219,13 +227,22 @@ final class TrackDetailsViewController: UIViewController {
         present(navController, animated: true)
     }
     
-    private func updateButtonState() {
+    private func isCreateButtonEnabled() {
         let hasTrackTitle = !(trackTitleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true)
         let hasChosenWeekDays = trackerType == .task ? true : !chosenWeekDays.isEmpty
         let isEnabled = hasTrackTitle && hasChosenWeekDays
         
         createButton.isEnabled = isEnabled
         createButton.backgroundColor = isEnabled ? .ypBlack : .ypGray
+    }
+    
+    private func isClearTextButtonVisible() {
+        if trackTitleTextField.isFirstResponder,
+           !(trackTitleTextField.text?.isEmpty ?? true) {
+            trackTitleTextField.rightViewMode = .always
+        } else {
+            trackTitleTextField.rightViewMode = .never
+        }
     }
     
     private func isWarningLabelHidden(_ isHidden: Bool) {
