@@ -50,7 +50,6 @@ final class TrackerCell: UICollectionViewCell {
         label.textColor = .ypWhite
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.setContentHuggingPriority(.required, for: .vertical)
         return label
     }()
     
@@ -142,7 +141,6 @@ final class TrackerCell: UICollectionViewCell {
         ])
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: emojiView.bottomAnchor, constant: 8),
             titleLabel.leadingAnchor.constraint(equalTo: trackerCardView.leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: trackerCardView.trailingAnchor, constant: -12),
             titleLabel.bottomAnchor.constraint(equalTo: trackerCardView.bottomAnchor, constant: -12)
