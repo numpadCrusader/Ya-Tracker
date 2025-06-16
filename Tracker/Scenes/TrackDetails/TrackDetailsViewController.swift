@@ -90,6 +90,7 @@ final class TrackDetailsViewController: UIViewController {
     
     private lazy var emojiSelectorView: EmojiSelectorView = {
         let view = EmojiSelectorView()
+        view.delegate = self
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -145,6 +146,7 @@ final class TrackDetailsViewController: UIViewController {
             isCreateButtonEnabled()
         }
     }
+    private var chosenEmoji: String?
 
     // MARK: - Initializers
     
@@ -174,12 +176,13 @@ final class TrackDetailsViewController: UIViewController {
     
     @objc private func createButtonTapped() {
         let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
+        let emoji = chosenEmoji ?? "🤖"
         
         let tracker = Tracker(
             id: UUID(),
             title: trackTitle,
             color: .systemIndigo,
-            emoji: "🤖",
+            emoji: emoji,
             schedule: chosenWeekDays)
         
         let trackerCategory = TrackerCategory(title: chosenCategory, trackers: [tracker])
@@ -393,5 +396,14 @@ extension TrackDetailsViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         trackTitleTextField.resignFirstResponder()
         return true
+    }
+}
+
+// MARK: - EmojiSelectorViewDelegate
+
+extension TrackDetailsViewController: EmojiSelectorViewDelegate {
+    
+    func didSelectEmoji(_ emoji: String) {
+        chosenEmoji = emoji
     }
 }

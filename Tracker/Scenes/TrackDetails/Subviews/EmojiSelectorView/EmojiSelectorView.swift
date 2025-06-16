@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol EmojiSelectorViewDelegate: AnyObject {
+    func didSelectEmoji(_ emoji: String)
+}
+
 final class EmojiSelectorView: UIView {
     
     // MARK: - Visual Components
@@ -20,7 +24,7 @@ final class EmojiSelectorView: UIView {
         return label
     }()
     
-    private lazy var collectionView: AutoHeightCollectionView = {
+    private lazy var emojiCollectionView: AutoHeightCollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
@@ -33,6 +37,10 @@ final class EmojiSelectorView: UIView {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
+    
+    // MARK: - Public Properties
+    
+    weak var delegate: EmojiSelectorViewDelegate?
     
     // MARK: - Private Properties
     
@@ -47,7 +55,7 @@ final class EmojiSelectorView: UIView {
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)
         configure()
-        collectionView.reloadData()
+        emojiCollectionView.reloadData()
     }
     
     required init?(coder: NSCoder) {
@@ -62,15 +70,15 @@ final class EmojiSelectorView: UIView {
     }
     
     private func addSubviews() {
-        addSubview(collectionView)
+        addSubview(emojiCollectionView)
     }
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            emojiCollectionView.topAnchor.constraint(equalTo: topAnchor),
+            emojiCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            emojiCollectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            emojiCollectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 }
@@ -116,5 +124,28 @@ extension EmojiSelectorView: UICollectionViewDelegateFlowLayout {
         let availableWidth = collectionView.bounds.width
         let side = floor(availableWidth / itemsPerRow)
         return CGSize(width: side, height: side)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard 
+            indexPath.row < emojiList.count,
+            let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
+        else {
+            return
+        }
+        
+        cell.setIsSelected(true)
+        delegate?.didSelectEmoji(emojiList[indexPath.row])
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        guard
+            indexPath.row < emojiList.count,
+            let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
+        else {
+            return
+        }
+        
+        cell.setIsSelected(false)
     }
 }

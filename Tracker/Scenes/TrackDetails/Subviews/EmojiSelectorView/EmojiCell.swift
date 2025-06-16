@@ -39,10 +39,13 @@ final class EmojiCell: UICollectionViewCell {
         emojiLabel.text = emoji
     }
     
+    func setIsSelected(_ isSelected: Bool) {
+        contentView.backgroundColor = isSelected ? .ypLightGray : .clear
+    }
+    
     // MARK: - Private Methods
     
     private func configure() {
-        contentView.backgroundColor = .ypLightGray
         contentView.layer.cornerRadius = 16
         
         addSubviews()
