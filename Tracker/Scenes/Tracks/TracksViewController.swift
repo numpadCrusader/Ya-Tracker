@@ -164,18 +164,23 @@ final class TracksViewController: UIViewController {
     }
     
     private func reloadCollectionView() {
-        let completedTrackerIDs = Set(completedTrackers.map { $0.trackerId })
         let currentWeekDay = currentDate.weekDay
         
         let filteredCategories = categories.compactMap { category -> TrackerCategory? in
             let combinedTrackers = category.trackers.filter { tracker in
                 if tracker.schedule.isEmpty {
-                    return !completedTrackerIDs.contains(tracker.id)
+                    let notCompleted = !completedTrackers.contains { $0.trackerId == tracker.id }
+                    
+                    let completedToday = completedTrackers.contains {
+                        $0.trackerId == tracker.id && $0.date == currentDate
+                    }
+                    
+                    return notCompleted || completedToday
                 }
-
+                
                 return tracker.schedule.contains(currentWeekDay)
             }
-
+            
             return combinedTrackers.isEmpty ? nil
             : TrackerCategory(title: category.title, trackers: combinedTrackers)
         }
