@@ -50,6 +50,7 @@ final class TrackerCell: UICollectionViewCell {
         label.textColor = .ypWhite
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.setContentHuggingPriority(.required, for: .vertical)
         return label
     }()
     
@@ -123,7 +124,8 @@ final class TrackerCell: UICollectionViewCell {
     private func addConstraints() {
         NSLayoutConstraint.activate([
             trackerCardView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            trackerCardView.widthAnchor.constraint(equalToConstant: 167),
+            trackerCardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            trackerCardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             trackerCardView.heightAnchor.constraint(equalToConstant: 90)
         ])
         
@@ -140,14 +142,16 @@ final class TrackerCell: UICollectionViewCell {
         ])
         
         NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: emojiView.bottomAnchor, constant: 8),
             titleLabel.leadingAnchor.constraint(equalTo: trackerCardView.leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: trackerCardView.trailingAnchor, constant: -12),
             titleLabel.bottomAnchor.constraint(equalTo: trackerCardView.bottomAnchor, constant: -12)
         ])
         
         NSLayoutConstraint.activate([
-            streakLabel.topAnchor.constraint(equalTo: trackerCardView.bottomAnchor, constant: 12),
-            streakLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12)
+            streakLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            streakLabel.trailingAnchor.constraint(equalTo: actionButton.leadingAnchor, constant: -8),
+            streakLabel.centerYAnchor.constraint(equalTo: actionButton.centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([

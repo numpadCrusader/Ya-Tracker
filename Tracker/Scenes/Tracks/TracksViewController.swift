@@ -32,12 +32,15 @@ final class TracksViewController: UIViewController {
     
     private lazy var trackerCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 167, height: 148)
         layout.headerReferenceSize = CGSize(width: UIView.noIntrinsicMetric, height: 18)
         layout.sectionInset = UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 9
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
         
         collectionView.register(
@@ -227,6 +230,24 @@ extension TracksViewController: UICollectionViewDataSource {
         
         header.update(with: visibleCategories[indexPath.section].title)
         return header
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension TracksViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let itemsPerRow: CGFloat = 2
+        let spacing: CGFloat = 9
+        
+        let availableWidth = collectionView.bounds.width - spacing
+        let width = availableWidth / itemsPerRow
+        return CGSize(width: floor(width), height: 148)
     }
 }
 
