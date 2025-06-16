@@ -185,7 +185,7 @@ final class TrackDetailsViewController: UIViewController {
         isClearTextButtonVisible()
     }
     
-    @objc func clearText() {
+    @objc private func clearText() {
         trackTitleTextField.text = ""
         isClearTextButtonVisible()
         isWarningLabelHidden(true)

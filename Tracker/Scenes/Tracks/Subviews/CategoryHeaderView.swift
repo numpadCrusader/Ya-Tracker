@@ -11,7 +11,7 @@ final class CategoryHeaderView: UICollectionReusableView {
     
     // MARK: - Visual Components
     
-    let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: 19)
         label.textColor = .ypBlack
