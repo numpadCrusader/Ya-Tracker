@@ -377,4 +377,9 @@ extension TrackDetailsViewController: UITextFieldDelegate {
         
         return isAllowedToType
     }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        trackTitleTextField.resignFirstResponder()
+        return true
+    }
 }
