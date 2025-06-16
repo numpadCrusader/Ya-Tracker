@@ -11,6 +11,14 @@ final class TrackDetailCell: UITableViewCell {
     
     // MARK: - Visual Components
     
+    private lazy var labelsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 2
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
     private lazy var detailTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 17, weight: .regular)
@@ -81,24 +89,15 @@ final class TrackDetailCell: UITableViewCell {
     }
     
     private func addSubviews() {
-        contentView.addSubviews(
-            detailTitleLabel,
-            detailSubtitleLabel,
-            chevronImageView,
-            botSeparatorView)
+        labelsStackView.addArrangedSubviews(detailTitleLabel, detailSubtitleLabel)
+        contentView.addSubviews(labelsStackView, chevronImageView, botSeparatorView)
     }
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            detailTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            detailTitleLabel.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -16),
-            detailTitleLabel.bottomAnchor.constraint(equalTo: contentView.centerYAnchor, constant: -1)
-        ])
-        
-        NSLayoutConstraint.activate([
-            detailSubtitleLabel.leadingAnchor.constraint(equalTo: detailTitleLabel.leadingAnchor),
-            detailSubtitleLabel.trailingAnchor.constraint(equalTo: detailTitleLabel.trailingAnchor),
-            detailSubtitleLabel.topAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 1)
+            labelsStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            labelsStackView.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -16),
+            labelsStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
         
         NSLayoutConstraint.activate([
