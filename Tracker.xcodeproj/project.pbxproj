@@ -155,9 +155,11 @@
 		046B1B942DFEAE1A00A8CB79 /* Subviews */ = {
 			isa = PBXGroup;
 			children = (
-				046BD8232E00692300D22452 /* EmojiSelectorView */,
-				046B1B952DFEAE3000A8CB79 /* PaddedTextField.swift */,
 				046B1B972DFEC0F100A8CB79 /* TrackDetailCell.swift */,
+				046B1B952DFEAE3000A8CB79 /* PaddedTextField.swift */,
+				046BD8482E0086DB00D22452 /* AutoHeightCollectionView.swift */,
+				046BD8232E00692300D22452 /* EmojiSelectorView */,
+				046BD84B2E009C4900D22452 /* ColorSelectorView */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
@@ -167,9 +169,15 @@
 			children = (
 				046BD8242E00695000D22452 /* EmojiSelectorView.swift */,
 				046BD8262E006C1D00D22452 /* EmojiCell.swift */,
-				046BD8482E0086DB00D22452 /* AutoHeightCollectionView.swift */,
 			);
 			path = EmojiSelectorView;
+			sourceTree = "<group>";
+		};
+		046BD84B2E009C4900D22452 /* ColorSelectorView */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ColorSelectorView;
 			sourceTree = "<group>";
 		};
 		04735F522DF5F8F000184011 /* Models */ = {
