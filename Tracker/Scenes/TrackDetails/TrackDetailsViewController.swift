@@ -88,6 +88,12 @@ final class TrackDetailsViewController: UIViewController {
         return tableView
     }()
     
+    private lazy var emojiSelectorView: EmojiSelectorView = {
+        let view = EmojiSelectorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var botButtonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.distribution = .fillEqually
@@ -205,7 +211,7 @@ final class TrackDetailsViewController: UIViewController {
         view.addSubviews(scrollView, botButtonStackView)
         
         scrollView.addSubview(contentView)
-        contentView.addSubviews(headerStackView, trackerDetailsTableView)
+        contentView.addSubviews(headerStackView, trackerDetailsTableView, emojiSelectorView)
         
         headerStackView.addArrangedSubviews(trackTitleTextField, warningLabel)
         botButtonStackView.addArrangedSubviews(cancelButton, createButton)
@@ -223,7 +229,7 @@ final class TrackDetailsViewController: UIViewController {
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: trackerDetailsTableView.bottomAnchor),
+            contentView.bottomAnchor.constraint(equalTo: emojiSelectorView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
         
@@ -241,6 +247,12 @@ final class TrackDetailsViewController: UIViewController {
             trackerDetailsTableView.topAnchor.constraint(equalTo: headerStackView.bottomAnchor, constant: 24),
             trackerDetailsTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             trackerDetailsTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
+        ])
+        
+        NSLayoutConstraint.activate([
+            emojiSelectorView.topAnchor.constraint(equalTo: trackerDetailsTableView.bottomAnchor, constant: 24),
+            emojiSelectorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            emojiSelectorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
         
         NSLayoutConstraint.activate([
