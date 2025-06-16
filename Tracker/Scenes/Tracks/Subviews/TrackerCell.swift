@@ -16,10 +16,11 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - Visual Components
     
     private lazy var trackerCardView: UIView = {
+        let borderColor: UIColor = .trackerCellGray
+        
         let view = UIView()
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
-        let borderColor: UIColor = .trackerCellGray
         view.layer.borderColor = borderColor.cgColor
         view.layer.borderWidth = 1
         view.translatesAutoresizingMaskIntoConstraints = false

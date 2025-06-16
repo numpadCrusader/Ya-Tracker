@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0425E97D2DFFE98200041F4C /* CategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0425E97C2DFFE98200041F4C /* CategoryHeaderView.swift */; };
 		045AA1582DFDA953004A381E /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045AA1572DFDA953004A381E /* ScheduleViewController.swift */; };
 		045AA1602DFDAC8F004A381E /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045AA15F2DFDAC8F004A381E /* ScheduleCell.swift */; };
 		045AA1622DFDEB8A004A381E /* AutoHeightTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045AA1612DFDEB8A004A381E /* AutoHeightTableView.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0425E97C2DFFE98200041F4C /* CategoryHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryHeaderView.swift; sourceTree = "<group>"; };
 		045AA1572DFDA953004A381E /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		045AA15F2DFDAC8F004A381E /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
 		045AA1612DFDEB8A004A381E /* AutoHeightTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoHeightTableView.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				045EEBFF2DF9E9AF00D70774 /* TrackerCell.swift */,
+				0425E97C2DFFE98200041F4C /* CategoryHeaderView.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 				045AA1582DFDA953004A381E /* ScheduleViewController.swift in Sources */,
 				04735F562DF5FB4200184011 /* WeekDay.swift in Sources */,
 				045AA1652DFE08CD004A381E /* AddTrackViewController.swift in Sources */,
+				0425E97D2DFFE98200041F4C /* CategoryHeaderView.swift in Sources */,
 				04AAFC692DCBA93B007AD0D1 /* TabBarController.swift in Sources */,
 				045EEC002DF9E9AF00D70774 /* TrackerCell.swift in Sources */,
 				04735F5A2DF5FE5900184011 /* TrackerRecord.swift in Sources */,
