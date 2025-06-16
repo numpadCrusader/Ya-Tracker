@@ -42,6 +42,7 @@ final class TracksViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
+        collectionView.contentInset.top = 24
         
         collectionView.register(
             CategoryHeaderView.self,
