@@ -33,7 +33,7 @@ final class EmojiCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Private Methods
+    // MARK: - Public Methods
     
     func update(with emoji: String) {
         emojiLabel.text = emoji

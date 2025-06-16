@@ -95,6 +95,13 @@ final class TrackDetailsViewController: UIViewController {
         return view
     }()
     
+    private lazy var colorSelectorView: ColorSelectorView = {
+        let view = ColorSelectorView()
+        view.delegate = self
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var botButtonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.distribution = .fillEqually
@@ -147,6 +154,7 @@ final class TrackDetailsViewController: UIViewController {
         }
     }
     private var chosenEmoji: String?
+    private var chosenColor: UIColor?
 
     // MARK: - Initializers
     
@@ -177,11 +185,12 @@ final class TrackDetailsViewController: UIViewController {
     @objc private func createButtonTapped() {
         let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
         let emoji = chosenEmoji ?? "🤖"
+        let color = chosenColor ?? .systemIndigo
         
         let tracker = Tracker(
             id: UUID(),
             title: trackTitle,
-            color: .systemIndigo,
+            color: color,
             emoji: emoji,
             schedule: chosenWeekDays)
         
@@ -214,7 +223,11 @@ final class TrackDetailsViewController: UIViewController {
         view.addSubviews(scrollView, botButtonStackView)
         
         scrollView.addSubview(contentView)
-        contentView.addSubviews(headerStackView, trackerDetailsTableView, emojiSelectorView)
+        contentView.addSubviews(
+            headerStackView,
+            trackerDetailsTableView,
+            emojiSelectorView,
+            colorSelectorView)
         
         headerStackView.addArrangedSubviews(trackTitleTextField, warningLabel)
         botButtonStackView.addArrangedSubviews(cancelButton, createButton)
@@ -232,7 +245,7 @@ final class TrackDetailsViewController: UIViewController {
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: emojiSelectorView.bottomAnchor),
+            contentView.bottomAnchor.constraint(equalTo: colorSelectorView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
         
@@ -256,6 +269,12 @@ final class TrackDetailsViewController: UIViewController {
             emojiSelectorView.topAnchor.constraint(equalTo: trackerDetailsTableView.bottomAnchor, constant: 24),
             emojiSelectorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             emojiSelectorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            colorSelectorView.topAnchor.constraint(equalTo: emojiSelectorView.bottomAnchor, constant: 24),
+            colorSelectorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            colorSelectorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
         
         NSLayoutConstraint.activate([
@@ -405,5 +424,14 @@ extension TrackDetailsViewController: EmojiSelectorViewDelegate {
     
     func didSelectEmoji(_ emoji: String) {
         chosenEmoji = emoji
+    }
+}
+
+// MARK: - ColorSelectorViewDelegate
+
+extension TrackDetailsViewController: ColorSelectorViewDelegate {
+    
+    func didSelectColor(_ color: UIColor) {
+        chosenColor = color
     }
 }
