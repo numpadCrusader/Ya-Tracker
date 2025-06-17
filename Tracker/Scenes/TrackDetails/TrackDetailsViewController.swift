@@ -274,13 +274,13 @@ final class TrackDetailsViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            colorSelectorView.topAnchor.constraint(equalTo: emojiSelectorView.bottomAnchor, constant: 16),
+            colorSelectorView.topAnchor.constraint(equalTo: emojiSelectorView.bottomAnchor, constant: 40),
             colorSelectorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             colorSelectorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            botButtonStackView.topAnchor.constraint(equalTo: colorSelectorView.bottomAnchor, constant: 16),
+            botButtonStackView.topAnchor.constraint(equalTo: colorSelectorView.bottomAnchor, constant: 40),
             botButtonStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             botButtonStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             botButtonStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
