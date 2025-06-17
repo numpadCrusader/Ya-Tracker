@@ -11,6 +11,17 @@ final class ColorCell: UICollectionViewCell {
     
     // MARK: - Visual Components
     
+    private lazy var borderView: UIView = {
+        let view = UIView()
+        view.alpha = 0
+        view.backgroundColor = .ypWhite
+        view.layer.borderWidth = 3
+        view.layer.cornerRadius = 8
+        view.clipsToBounds = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var colorView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 8
@@ -38,31 +49,34 @@ final class ColorCell: UICollectionViewCell {
     
     func update(with color: UIColor) {
         colorView.backgroundColor = color
+        borderView.layer.borderColor = color.withAlphaComponent(0.3).cgColor
     }
     
-    func setIsSelected(_ isSelected: Bool, with color: UIColor) {
-        let borderColor: UIColor = isSelected ? color.withAlphaComponent(0.3) : color
-        contentView.layer.borderColor = borderColor.cgColor
+    func setIsSelected(_ isSelected: Bool) {
+        borderView.alpha = isSelected ? 1 : 0
     }
     
     // MARK: - Private Methods
     
     private func configure() {
-        let initialBorderColor: UIColor = .ypWhite
-        
-        contentView.layer.cornerRadius = 8
-        contentView.layer.borderWidth = 3
-        contentView.layer.borderColor = initialBorderColor.cgColor
-        
         addSubviews()
         addConstraints()
     }
     
     private func addSubviews() {
-        contentView.addSubview(colorView)
+        contentView.addSubviews(borderView, colorView)
     }
     
     private func addConstraints() {
+        NSLayoutConstraint.activate([
+            borderView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            borderView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            borderView.topAnchor.constraint(equalTo: colorView.topAnchor, constant: -6),
+            borderView.leadingAnchor.constraint(equalTo: colorView.leadingAnchor, constant: -6),
+            borderView.trailingAnchor.constraint(equalTo: colorView.trailingAnchor, constant: 6),
+            borderView.bottomAnchor.constraint(equalTo: colorView.bottomAnchor, constant: 6),
+        ])
+        
         NSLayoutConstraint.activate([
             colorView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             colorView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),

@@ -154,9 +154,8 @@ extension ColorSelectorView: UICollectionViewDelegateFlowLayout {
             return
         }
         
-        let selectedColor = colorList[indexPath.row]
-        cell.setIsSelected(true, with: selectedColor)
-        delegate?.didSelectColor(selectedColor)
+        cell.setIsSelected(true)
+        delegate?.didSelectColor(colorList[indexPath.row])
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -167,6 +166,6 @@ extension ColorSelectorView: UICollectionViewDelegateFlowLayout {
             return
         }
         
-        cell.setIsSelected(false, with: .ypWhite)
+        cell.setIsSelected(false)
     }
 }
