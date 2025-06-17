@@ -298,7 +298,9 @@ final class TrackDetailsViewController: UIViewController {
     private func isCreateButtonEnabled() {
         let hasTrackTitle = !(trackTitleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true)
         let hasChosenWeekDays = trackerType == .task ? true : !chosenWeekDays.isEmpty
-        let isEnabled = hasTrackTitle && hasChosenWeekDays
+        let hasChosenEmoji = chosenEmoji != nil ? true : false
+        let hasChosenColor = chosenColor != nil ? true : false
+        let isEnabled = hasTrackTitle && hasChosenWeekDays && hasChosenEmoji && hasChosenColor
         
         createButton.isEnabled = isEnabled
         createButton.backgroundColor = isEnabled ? .ypBlack : .ypGray
@@ -427,6 +429,7 @@ extension TrackDetailsViewController: EmojiSelectorViewDelegate {
     
     func didSelectEmoji(_ emoji: String) {
         chosenEmoji = emoji
+        isCreateButtonEnabled()
     }
 }
 
@@ -436,5 +439,6 @@ extension TrackDetailsViewController: ColorSelectorViewDelegate {
     
     func didSelectColor(_ color: UIColor) {
         chosenColor = color
+        isCreateButtonEnabled()
     }
 }
