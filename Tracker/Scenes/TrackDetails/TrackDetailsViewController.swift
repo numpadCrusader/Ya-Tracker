@@ -19,6 +19,7 @@ final class TrackDetailsViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.keyboardDismissMode = .onDrag
+        scroll.showsVerticalScrollIndicator = false
         scroll.translatesAutoresizingMaskIntoConstraints = false
         return scroll
     }()
@@ -220,14 +221,15 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubviews(scrollView, botButtonStackView)
+        view.addSubviews(scrollView)
         
         scrollView.addSubview(contentView)
         contentView.addSubviews(
             headerStackView,
             trackerDetailsTableView,
             emojiSelectorView,
-            colorSelectorView)
+            colorSelectorView,
+            botButtonStackView)
         
         headerStackView.addArrangedSubviews(trackTitleTextField, warningLabel)
         botButtonStackView.addArrangedSubviews(cancelButton, createButton)
@@ -238,14 +240,14 @@ final class TrackDetailsViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: botButtonStackView.topAnchor)
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: colorSelectorView.bottomAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
         
@@ -278,9 +280,10 @@ final class TrackDetailsViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            botButtonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            botButtonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            botButtonStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            botButtonStackView.topAnchor.constraint(equalTo: colorSelectorView.bottomAnchor, constant: 24),
+            botButtonStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            botButtonStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            botButtonStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             botButtonStackView.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
