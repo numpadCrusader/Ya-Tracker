@@ -24,12 +24,12 @@ final class ColorSelectorView: UIView {
         return label
     }()
     
-    private lazy var colorCollectionView: AutoHeightCollectionView = {
+    private lazy var colorCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         
-        let collectionView = AutoHeightCollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(ColorCell.self, forCellWithReuseIdentifier: ColorCell.identifier)
@@ -50,6 +50,8 @@ final class ColorSelectorView: UIView {
         .selection13, .selection14, .selection15, .selection16, .selection17, .selection18
     ]
     
+    private var collectionViewHeightConstraint: NSLayoutConstraint?
+    
     // MARK: - Initializers
     
     override init(frame: CGRect = .zero) {
@@ -60,6 +62,20 @@ final class ColorSelectorView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - UIView
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        colorCollectionView.layoutIfNeeded()
+        let newHeight = colorCollectionView.collectionViewLayout.collectionViewContentSize.height
+        
+        if collectionViewHeightConstraint?.constant != newHeight {
+            collectionViewHeightConstraint?.constant = newHeight
+            invalidateIntrinsicContentSize()
+        }
     }
     
     // MARK: - Private Methods
@@ -74,6 +90,9 @@ final class ColorSelectorView: UIView {
     }
     
     private func addConstraints() {
+        collectionViewHeightConstraint = colorCollectionView.heightAnchor.constraint(equalToConstant: 0)
+        collectionViewHeightConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
             colorCollectionView.topAnchor.constraint(equalTo: topAnchor),
             colorCollectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -121,7 +140,8 @@ extension ColorSelectorView: UICollectionViewDelegateFlowLayout {
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         let itemsPerRow: CGFloat = 6
-        let availableWidth = collectionView.bounds.width
+        let inset = collectionView.contentInset.left + collectionView.contentInset.right
+        let availableWidth = collectionView.bounds.width - inset
         let side = floor(availableWidth / itemsPerRow)
         return CGSize(width: side, height: side)
     }
