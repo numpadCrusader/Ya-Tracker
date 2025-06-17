@@ -15,25 +15,24 @@ final class ColorSelectorView: UIView {
     
     // MARK: - Visual Components
     
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .ypBlack
-        label.font = .systemFont(ofSize: 19, weight: .bold)
-        label.text = "Цвет"
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
     private lazy var colorCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
+        layout.headerReferenceSize = CGSize(width: UIView.noIntrinsicMetric, height: 18)
+        layout.sectionInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(ColorCell.self, forCellWithReuseIdentifier: ColorCell.identifier)
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
+        
+        collectionView.register(
+            CategoryHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: CategoryHeaderView.reuseIdentifier)
+        
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 18)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
@@ -127,6 +126,25 @@ extension ColorSelectorView: UICollectionViewDataSource {
         cell.update(with: colorList[indexPath.row])
         
         return cell
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
+        guard
+            kind == UICollectionView.elementKindSectionHeader,
+            let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: CategoryHeaderView.reuseIdentifier,
+                for: indexPath) as? CategoryHeaderView
+        else {
+            return UICollectionReusableView()
+        }
+        
+        header.update(with: "Цвет")
+        return header
     }
 }
 
