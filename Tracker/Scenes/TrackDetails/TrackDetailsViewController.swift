@@ -145,7 +145,7 @@ final class TrackDetailsViewController: UIViewController {
     
     // MARK: - Private Properties
     
-    private let trackerStore = TrackerStore()
+    private let trackerStore: TrackerStoreProtocol
     
     private let trackerType: TrackerType
     private let trackerDetails: [TrackerType.Detail]
@@ -161,9 +161,13 @@ final class TrackDetailsViewController: UIViewController {
 
     // MARK: - Initializers
     
-    init(trackerType: TrackerType) {
+    init(
+        trackerType: TrackerType,
+        trackerStore: TrackerStoreProtocol = TrackerStore()
+    ) {
         self.trackerType = trackerType
         trackerDetails = trackerType.details
+        self.trackerStore = trackerStore
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -197,7 +201,7 @@ final class TrackDetailsViewController: UIViewController {
             emoji: emoji,
             schedule: chosenWeekDays)
         
-        try? trackerStore.addNewTracker(tracker, toCategory: chosenCategory)
+        trackerStore.addNewTracker(tracker, toCategory: chosenCategory)
         delegate?.didFinishAddingTrack()
     }
     

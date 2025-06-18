@@ -8,30 +8,27 @@
 import UIKit
 import CoreData
 
-enum TrackerCategoryStoreError: Error {
-    case decodingErrorInvalidTitle
-    case decodingErrorInvalidTrackers
-}
-
 protocol TrackerCategoryStoreDelegate: AnyObject {
     func storeDidUpdate()
 }
 
-final class TrackerCategoryStore: NSObject {
+protocol TrackerCategoryStoreProtocol {
+    var trackerCategories: [TrackerCategory] { get }
+    var delegate: TrackerCategoryStoreDelegate? { get set }
+}
+
+final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     
     // MARK: - Public Properties
     
     weak var delegate: TrackerCategoryStoreDelegate?
     
     var trackerCategories: [TrackerCategory] {
-        guard
-            let objects = fetchedResultsController?.fetchedObjects,
-            let categories = try? objects.map({ try self.trackerCategory(from: $0) })
-        else {
+        guard let objects = fetchedResultsController?.fetchedObjects else {
             return []
         }
         
-        return categories
+        return objects.compactMap ({ trackerCategory(from: $0) })
     }
     
     // MARK: - Private Properties
@@ -66,16 +63,15 @@ final class TrackerCategoryStore: NSObject {
         try controller.performFetch()
     }
     
-    private func trackerCategory(from entity: TrackerCategoryCoreData) throws -> TrackerCategory {
-        guard let title = entity.title else {
-            throw TrackerCategoryStoreError.decodingErrorInvalidTitle
+    private func trackerCategory(from entity: TrackerCategoryCoreData) -> TrackerCategory? {
+        guard
+            let title = entity.title,
+            let trackerSet = entity.trackers as? Set<TrackerCoreData>
+        else {
+            return nil
         }
         
-        guard let trackerSet = entity.trackers as? Set<TrackerCoreData> else {
-            throw TrackerCategoryStoreError.decodingErrorInvalidTrackers
-        }
-        
-        let trackers = try trackerSet.map { try TrackerStore.tracker(from: $0) }
+        let trackers = trackerSet.compactMap { TrackerStore.tracker(from: $0) }
         
         return TrackerCategory(title: title, trackers: trackers)
     }

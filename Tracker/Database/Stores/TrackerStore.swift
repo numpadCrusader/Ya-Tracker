@@ -8,11 +8,11 @@
 import UIKit
 import CoreData
 
-enum TrackerStoreError: Error {
-    case decodingError
+protocol TrackerStoreProtocol {
+    func addNewTracker(_ tracker: Tracker, toCategory title: String)
 }
 
-final class TrackerStore {
+final class TrackerStore: TrackerStoreProtocol {
     
     // MARK: - Private Properties
     
@@ -26,13 +26,13 @@ final class TrackerStore {
     
     // MARK: - Public Methods
     
-    func addNewTracker(_ tracker: Tracker, toCategory title: String) throws {
+    func addNewTracker(_ tracker: Tracker, toCategory title: String) {
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "title == %@", title)
         
         let trackerCategory: TrackerCategoryCoreData
         
-        if let existingCategory = try context.fetch(fetchRequest).first {
+        if let existingCategory = try? context.fetch(fetchRequest).first {
             trackerCategory = existingCategory
         } else {
             trackerCategory = TrackerCategoryCoreData(context: context)
@@ -47,10 +47,10 @@ final class TrackerStore {
         trackerCoreData.schedule = tracker.schedule as NSObject
         trackerCoreData.category = trackerCategory
 
-        try context.save()
+        try? context.save()
     }
     
-    static func tracker(from entity: TrackerCoreData) throws -> Tracker {
+    static func tracker(from entity: TrackerCoreData) -> Tracker? {
         guard
             let id = entity.id,
             let title = entity.title,
@@ -58,7 +58,7 @@ final class TrackerStore {
             let color = entity.color as? UIColor,
             let schedule = entity.schedule as? Set<WeekDay>
         else {
-            throw TrackerStoreError.decodingError
+            return nil
         }
         
         return Tracker(

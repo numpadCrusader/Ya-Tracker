@@ -73,7 +73,7 @@ final class TracksViewController: UIViewController {
     
     // MARK: - Private Properties
     
-    private let trackerCategoryStore: TrackerCategoryStore
+    private var trackerCategoryStore: TrackerCategoryStoreProtocol
     private let trackerRecordStore: TrackerRecordStoreProtocol
     
     private var categories: [TrackerCategory] = []
@@ -84,7 +84,7 @@ final class TracksViewController: UIViewController {
     // MARK: - Initializers
     
     init(
-        trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore(),
+        trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore(),
         trackerRecordStore: TrackerRecordStoreProtocol = TrackerRecordStore()
     ) {
         self.trackerCategoryStore = trackerCategoryStore

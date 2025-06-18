@@ -65,7 +65,7 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
             NSPredicate(format: "date == %@", date as CVarArg)
         ])
         
-        guard let existingRecord = try? context.fetch(fetchRequest).first else {
+        guard let _ = try? context.fetch(fetchRequest).first else {
             return false
         }
         
