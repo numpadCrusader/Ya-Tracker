@@ -139,11 +139,13 @@ final class TrackDetailsViewController: UIViewController {
         return button
     }()
     
-    // MARK: - Private Properties
+    // MARK: - Public Properties
     
     weak var delegate: TrackDetailsDelegate?
     
     // MARK: - Private Properties
+    
+    private let trackerStore = TrackerStore()
     
     private let trackerType: TrackerType
     private let trackerDetails: [TrackerType.Detail]
@@ -196,6 +198,7 @@ final class TrackDetailsViewController: UIViewController {
             schedule: chosenWeekDays)
         
         let trackerCategory = TrackerCategory(title: chosenCategory, trackers: [tracker])
+        try? trackerStore.addNewTracker(tracker, toCategory: chosenCategory)
         delegate?.didFinishAddingTrack(trackerCategory)
     }
     

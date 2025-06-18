@@ -40,6 +40,7 @@
 		04ADE1C42DC90E8800B69482 /* TracksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04ADE1C32DC90E8800B69482 /* TracksViewController.swift */; };
 		04ADE1C92DC90E8900B69482 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04ADE1C82DC90E8900B69482 /* Assets.xcassets */; };
 		04ADE1CC2DC90E8900B69482 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 04ADE1CB2DC90E8900B69482 /* Base */; };
+		04C4B12D2E026C40009EC1CB /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C4B12C2E026C40009EC1CB /* CoreDataManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 		04ADE1C82DC90E8900B69482 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		04ADE1CB2DC90E8900B69482 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		04ADE1CD2DC90E8900B69482 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		04C4B12C2E026C40009EC1CB /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,6 +198,7 @@
 		046E989F2E01CE3900058ADA /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				04C4B12E2E026D45009EC1CB /* Manager */,
 				046E98A82E01E08200058ADA /* Transformers */,
 				046E98A72E01E07600058ADA /* Stores */,
 				048E2DE22E02633F004CE27A /* TrackerStore.xcdatamodeld */,
@@ -284,6 +287,14 @@
 			path = Tracker;
 			sourceTree = "<group>";
 		};
+		04C4B12E2E026D45009EC1CB /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				04C4B12C2E026C40009EC1CB /* CoreDataManager.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -368,6 +379,7 @@
 				045AA1582DFDA953004A381E /* ScheduleViewController.swift in Sources */,
 				04735F562DF5FB4200184011 /* WeekDay.swift in Sources */,
 				045AA1652DFE08CD004A381E /* AddTrackViewController.swift in Sources */,
+				04C4B12D2E026C40009EC1CB /* CoreDataManager.swift in Sources */,
 				0425E97D2DFFE98200041F4C /* CategoryHeaderView.swift in Sources */,
 				04AAFC692DCBA93B007AD0D1 /* TabBarController.swift in Sources */,
 				045EEC002DF9E9AF00D70774 /* TrackerCell.swift in Sources */,
