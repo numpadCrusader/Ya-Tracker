@@ -41,10 +41,10 @@ final class TrackerCategoryStore: NSObject {
 
     // MARK: - Initializers
 
-    init(context: NSManagedObjectContext = CoreDataManager.shared.context) throws {
+    init(context: NSManagedObjectContext = CoreDataManager.shared.context) {
         self.context = context
         super.init()
-        try setupFetchedResultsController()
+        try? setupFetchedResultsController()
     }
     
     // MARK: - Private Methods

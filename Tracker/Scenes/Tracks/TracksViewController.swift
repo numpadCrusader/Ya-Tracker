@@ -73,12 +73,28 @@ final class TracksViewController: UIViewController {
     
     // MARK: - Private Properties
     
-    private let trackerCategoryStore = try? TrackerCategoryStore()
+    private let trackerCategoryStore: TrackerCategoryStore
+    private let trackerRecordStore: TrackerRecordStoreProtocol
     
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate = Date().dateOnly
+    
+    // MARK: - Initializers
+    
+    init(
+        trackerCategoryStore: TrackerCategoryStore = TrackerCategoryStore(),
+        trackerRecordStore: TrackerRecordStoreProtocol = TrackerRecordStore()
+    ) {
+        self.trackerCategoryStore = trackerCategoryStore
+        self.trackerRecordStore = trackerRecordStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - UIViewController
     
@@ -86,10 +102,10 @@ final class TracksViewController: UIViewController {
         super.viewDidLoad()
         configure()
         
-        categories = trackerCategoryStore?.trackerCategories ?? []
+        categories = trackerCategoryStore.trackerCategories
         reloadCollectionView()
         
-        trackerCategoryStore?.delegate = self
+        trackerCategoryStore.delegate = self
     }
     
     // MARK: - Actions
@@ -175,12 +191,8 @@ final class TracksViewController: UIViewController {
         let filteredCategories = categories.compactMap { category -> TrackerCategory? in
             let combinedTrackers = category.trackers.filter { tracker in
                 if tracker.schedule.isEmpty {
-                    let notCompleted = !completedTrackers.contains { $0.trackerId == tracker.id }
-                    
-                    let completedToday = completedTrackers.contains {
-                        $0.trackerId == tracker.id && $0.date == currentDate
-                    }
-                    
+                    let notCompleted = trackerRecordStore.recordCount(for: tracker.id) == 0
+                    let completedToday = trackerRecordStore.hasRecord(for: tracker.id, on: currentDate)
                     return notCompleted || completedToday
                 }
                 
@@ -227,9 +239,8 @@ extension TracksViewController: UICollectionViewDataSource {
         }
         
         let trackerModel = visibleCategories[indexPath.section].trackers[indexPath.row]
-        let trackerRecords = completedTrackers.filter { $0.trackerId == trackerModel.id }
-        let isDoneToday = trackerRecords.contains { $0.date == currentDate }
-        let streakCount = trackerRecords.count
+        let isDoneToday = trackerRecordStore.hasRecord(for: trackerModel.id, on: currentDate)
+        let streakCount = trackerRecordStore.recordCount(for: trackerModel.id)
         
         cell.update(with: trackerModel, and: streakCount)
         cell.setIsDone(isDoneToday)
@@ -293,10 +304,10 @@ extension TracksViewController: TrackerCellDelegate {
         let trackerModel = visibleCategories[indexPath.section].trackers[indexPath.row]
         let trackerRecord = TrackerRecord(trackerId: trackerModel.id, date: currentDate)
         
-        if completedTrackers.contains(trackerRecord) {
-            completedTrackers.remove(trackerRecord)
+        if trackerRecordStore.hasRecord(for: trackerRecord.trackerId, on: trackerRecord.date) {
+            trackerRecordStore.deleteRecord(trackerRecord)
         } else {
-            completedTrackers.insert(trackerRecord)
+            trackerRecordStore.addRecord(trackerRecord)
         }
         
         trackerCollectionView.reloadItems(at: [indexPath])
@@ -319,7 +330,7 @@ extension TracksViewController: AddTrackViewControllerDelegate {
 extension TracksViewController: TrackerCategoryStoreDelegate {
     
     func storeDidUpdate() {
-        categories = trackerCategoryStore?.trackerCategories ?? []
+        categories = trackerCategoryStore.trackerCategories
         reloadCollectionView()
     }
 }
