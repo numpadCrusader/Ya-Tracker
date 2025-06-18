@@ -9,7 +9,7 @@ import UIKit
 
 protocol TrackDetailsDelegate: AnyObject {
     func didCancelAddingTrack()
-    func didFinishAddingTrack(_ trackerCategory: TrackerCategory)
+    func didFinishAddingTrack()
 }
 
 final class TrackDetailsViewController: UIViewController {
@@ -197,9 +197,8 @@ final class TrackDetailsViewController: UIViewController {
             emoji: emoji,
             schedule: chosenWeekDays)
         
-        let trackerCategory = TrackerCategory(title: chosenCategory, trackers: [tracker])
         try? trackerStore.addNewTracker(tracker, toCategory: chosenCategory)
-        delegate?.didFinishAddingTrack(trackerCategory)
+        delegate?.didFinishAddingTrack()
     }
     
     @objc private func textFieldDidChange() {

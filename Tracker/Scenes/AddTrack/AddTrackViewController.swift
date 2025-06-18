@@ -9,7 +9,7 @@ import UIKit
 
 protocol AddTrackViewControllerDelegate: AnyObject {
     func didCancelAddingTrack()
-    func didFinishAddingTrack(_ newTrackerCategory: TrackerCategory)
+    func didFinishAddingTrack()
 }
 
 final class AddTrackViewController: UIViewController {
@@ -110,7 +110,7 @@ extension AddTrackViewController: TrackDetailsDelegate {
         delegate?.didCancelAddingTrack()
     }
     
-    func didFinishAddingTrack(_ trackerCategory: TrackerCategory) {
-        delegate?.didFinishAddingTrack(trackerCategory)
+    func didFinishAddingTrack() {
+        delegate?.didFinishAddingTrack()
     }
 }

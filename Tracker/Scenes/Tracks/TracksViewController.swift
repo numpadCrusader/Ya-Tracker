@@ -85,7 +85,10 @@ final class TracksViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
+        
+        categories = trackerCategoryStore?.trackerCategories ?? []
         reloadCollectionView()
+        
         trackerCategoryStore?.delegate = self
     }
     
@@ -308,21 +311,7 @@ extension TracksViewController: AddTrackViewControllerDelegate {
         dismiss(animated: true)
     }
     
-    func didFinishAddingTrack(_ newTrackerCategory: TrackerCategory) {
-        if let oldCategory = categories.first(where: { $0.title == newTrackerCategory.title }) {
-            let mergedCategory = TrackerCategory(
-                title: oldCategory.title,
-                trackers: oldCategory.trackers + newTrackerCategory.trackers)
-            
-            var updatedCategories = categories.filter { $0.title != oldCategory.title }
-            updatedCategories.append(mergedCategory)
-            categories = updatedCategories
-        } else {
-            let updatedCategories = categories + [newTrackerCategory]
-            categories = updatedCategories
-        }
-        
-        reloadCollectionView()
+    func didFinishAddingTrack() {
         dismiss(animated: true)
     }
 }
@@ -330,7 +319,7 @@ extension TracksViewController: AddTrackViewControllerDelegate {
 extension TracksViewController: TrackerCategoryStoreDelegate {
     
     func storeDidUpdate() {
-//        visibleCategories = trackerCategoryStore?.trackerCategories ?? []
-//        trackerCollectionView.reloadData()
+        categories = trackerCategoryStore?.trackerCategories ?? []
+        reloadCollectionView()
     }
 }
