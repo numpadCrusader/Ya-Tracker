@@ -9,7 +9,7 @@ import UIKit
 
 protocol TrackDetailsDelegate: AnyObject {
     func didCancelAddingTrack()
-    func didFinishAddingTrack(_ trackerCategory: TrackerCategory)
+    func didFinishAddingTrack()
 }
 
 final class TrackDetailsViewController: UIViewController {
@@ -19,6 +19,7 @@ final class TrackDetailsViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.keyboardDismissMode = .onDrag
+        scroll.showsVerticalScrollIndicator = false
         scroll.translatesAutoresizingMaskIntoConstraints = false
         return scroll
     }()
@@ -88,6 +89,20 @@ final class TrackDetailsViewController: UIViewController {
         return tableView
     }()
     
+    private lazy var emojiSelectorView: EmojiSelectorView = {
+        let view = EmojiSelectorView()
+        view.delegate = self
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var colorSelectorView: ColorSelectorView = {
+        let view = ColorSelectorView()
+        view.delegate = self
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var botButtonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.distribution = .fillEqually
@@ -124,11 +139,13 @@ final class TrackDetailsViewController: UIViewController {
         return button
     }()
     
-    // MARK: - Private Properties
+    // MARK: - Public Properties
     
     weak var delegate: TrackDetailsDelegate?
     
     // MARK: - Private Properties
+    
+    private let trackerStore: TrackerStoreProtocol
     
     private let trackerType: TrackerType
     private let trackerDetails: [TrackerType.Detail]
@@ -139,12 +156,18 @@ final class TrackDetailsViewController: UIViewController {
             isCreateButtonEnabled()
         }
     }
+    private var chosenEmoji: String?
+    private var chosenColor: UIColor?
 
     // MARK: - Initializers
     
-    init(trackerType: TrackerType) {
+    init(
+        trackerType: TrackerType,
+        trackerStore: TrackerStoreProtocol = TrackerStore()
+    ) {
         self.trackerType = trackerType
         trackerDetails = trackerType.details
+        self.trackerStore = trackerStore
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -168,16 +191,18 @@ final class TrackDetailsViewController: UIViewController {
     
     @objc private func createButtonTapped() {
         let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
+        let emoji = chosenEmoji ?? "🤖"
+        let color = chosenColor ?? .systemIndigo
         
         let tracker = Tracker(
             id: UUID(),
             title: trackTitle,
-            color: .systemIndigo,
-            emoji: "🤖",
+            color: color,
+            emoji: emoji,
             schedule: chosenWeekDays)
         
-        let trackerCategory = TrackerCategory(title: chosenCategory, trackers: [tracker])
-        delegate?.didFinishAddingTrack(trackerCategory)
+        trackerStore.addNewTracker(tracker, toCategory: chosenCategory)
+        delegate?.didFinishAddingTrack()
     }
     
     @objc private func textFieldDidChange() {
@@ -202,10 +227,15 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubviews(scrollView, botButtonStackView)
+        view.addSubviews(scrollView)
         
         scrollView.addSubview(contentView)
-        contentView.addSubviews(headerStackView, trackerDetailsTableView)
+        contentView.addSubviews(
+            headerStackView,
+            trackerDetailsTableView,
+            emojiSelectorView,
+            colorSelectorView,
+            botButtonStackView)
         
         headerStackView.addArrangedSubviews(trackTitleTextField, warningLabel)
         botButtonStackView.addArrangedSubviews(cancelButton, createButton)
@@ -216,14 +246,14 @@ final class TrackDetailsViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: botButtonStackView.topAnchor)
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: trackerDetailsTableView.bottomAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
         
@@ -244,9 +274,22 @@ final class TrackDetailsViewController: UIViewController {
         ])
         
         NSLayoutConstraint.activate([
-            botButtonStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            botButtonStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            botButtonStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            emojiSelectorView.topAnchor.constraint(equalTo: trackerDetailsTableView.bottomAnchor, constant: 32),
+            emojiSelectorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            emojiSelectorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            colorSelectorView.topAnchor.constraint(equalTo: emojiSelectorView.bottomAnchor, constant: 40),
+            colorSelectorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            colorSelectorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            botButtonStackView.topAnchor.constraint(equalTo: colorSelectorView.bottomAnchor, constant: 40),
+            botButtonStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            botButtonStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            botButtonStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             botButtonStackView.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
@@ -261,7 +304,9 @@ final class TrackDetailsViewController: UIViewController {
     private func isCreateButtonEnabled() {
         let hasTrackTitle = !(trackTitleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true)
         let hasChosenWeekDays = trackerType == .task ? true : !chosenWeekDays.isEmpty
-        let isEnabled = hasTrackTitle && hasChosenWeekDays
+        let hasChosenEmoji = chosenEmoji != nil ? true : false
+        let hasChosenColor = chosenColor != nil ? true : false
+        let isEnabled = hasTrackTitle && hasChosenWeekDays && hasChosenEmoji && hasChosenColor
         
         createButton.isEnabled = isEnabled
         createButton.backgroundColor = isEnabled ? .ypBlack : .ypGray
@@ -381,5 +426,25 @@ extension TrackDetailsViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         trackTitleTextField.resignFirstResponder()
         return true
+    }
+}
+
+// MARK: - EmojiSelectorViewDelegate
+
+extension TrackDetailsViewController: EmojiSelectorViewDelegate {
+    
+    func didSelectEmoji(_ emoji: String) {
+        chosenEmoji = emoji
+        isCreateButtonEnabled()
+    }
+}
+
+// MARK: - ColorSelectorViewDelegate
+
+extension TrackDetailsViewController: ColorSelectorViewDelegate {
+    
+    func didSelectColor(_ color: UIColor) {
+        chosenColor = color
+        isCreateButtonEnabled()
     }
 }
