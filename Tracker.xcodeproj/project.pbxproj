@@ -24,7 +24,6 @@
 		046BD84D2E009CC600D22452 /* ColorSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046BD84C2E009CC600D22452 /* ColorSelectorView.swift */; };
 		046BD84F2E009DEA00D22452 /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046BD84E2E009DEA00D22452 /* ColorCell.swift */; };
 		046E98A12E01CE4E00058ADA /* DaysValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E98A02E01CE4E00058ADA /* DaysValueTransformer.swift */; };
-		046E98A42E01D04300058ADA /* TrackerStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 046E98A22E01D04300058ADA /* TrackerStore.xcdatamodeld */; };
 		046E98A62E01E06400058ADA /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E98A52E01E06400058ADA /* TrackerStore.swift */; };
 		046E98AA2E01E0E800058ADA /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E98A92E01E0E800058ADA /* TrackerCategoryStore.swift */; };
 		046E98AC2E01E0F400058ADA /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046E98AB2E01E0F400058ADA /* TrackerRecordStore.swift */; };
@@ -32,6 +31,7 @@
 		04735F562DF5FB4200184011 /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F552DF5FB4200184011 /* WeekDay.swift */; };
 		04735F582DF5FBD600184011 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F572DF5FBD600184011 /* TrackerCategory.swift */; };
 		04735F5A2DF5FE5900184011 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F592DF5FE5900184011 /* TrackerRecord.swift */; };
+		048E2DE42E02633F004CE27A /* TrackerStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 048E2DE22E02633F004CE27A /* TrackerStore.xcdatamodeld */; };
 		04AAFC692DCBA93B007AD0D1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AAFC682DCBA93B007AD0D1 /* TabBarController.swift */; };
 		04AAFC6B2DCBAABD007AD0D1 /* StatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AAFC6A2DCBAABD007AD0D1 /* StatsViewController.swift */; };
 		04AAFC6F2DCBC513007AD0D1 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AAFC6E2DCBC513007AD0D1 /* UIView+Extensions.swift */; };
@@ -60,7 +60,6 @@
 		046BD84C2E009CC600D22452 /* ColorSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSelectorView.swift; sourceTree = "<group>"; };
 		046BD84E2E009DEA00D22452 /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
 		046E98A02E01CE4E00058ADA /* DaysValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysValueTransformer.swift; sourceTree = "<group>"; };
-		046E98A32E01D04300058ADA /* TrackerStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TrackerStore.xcdatamodel; sourceTree = "<group>"; };
 		046E98A52E01E06400058ADA /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		046E98A92E01E0E800058ADA /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		046E98AB2E01E0F400058ADA /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
@@ -68,6 +67,7 @@
 		04735F552DF5FB4200184011 /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
 		04735F572DF5FBD600184011 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		04735F592DF5FE5900184011 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
+		048E2DE32E02633F004CE27A /* TrackerStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TrackerStore.xcdatamodel; sourceTree = "<group>"; };
 		04AAFC682DCBA93B007AD0D1 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		04AAFC6A2DCBAABD007AD0D1 /* StatsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsViewController.swift; sourceTree = "<group>"; };
 		04AAFC6E2DCBC513007AD0D1 /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
@@ -198,7 +198,7 @@
 			children = (
 				046E98A82E01E08200058ADA /* Transformers */,
 				046E98A72E01E07600058ADA /* Stores */,
-				046E98A22E01D04300058ADA /* TrackerStore.xcdatamodeld */,
+				048E2DE22E02633F004CE27A /* TrackerStore.xcdatamodeld */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -364,6 +364,7 @@
 				045AA1602DFDAC8F004A381E /* ScheduleCell.swift in Sources */,
 				046BD8272E006C1D00D22452 /* EmojiCell.swift in Sources */,
 				046BD84D2E009CC600D22452 /* ColorSelectorView.swift in Sources */,
+				048E2DE42E02633F004CE27A /* TrackerStore.xcdatamodeld in Sources */,
 				045AA1582DFDA953004A381E /* ScheduleViewController.swift in Sources */,
 				04735F562DF5FB4200184011 /* WeekDay.swift in Sources */,
 				045AA1652DFE08CD004A381E /* AddTrackViewController.swift in Sources */,
@@ -378,7 +379,6 @@
 				046E98AC2E01E0F400058ADA /* TrackerRecordStore.swift in Sources */,
 				046BD84F2E009DEA00D22452 /* ColorCell.swift in Sources */,
 				046B1B982DFEC0F200A8CB79 /* TrackDetailCell.swift in Sources */,
-				046E98A42E01D04300058ADA /* TrackerStore.xcdatamodeld in Sources */,
 				04AAFC6B2DCBAABD007AD0D1 /* StatsViewController.swift in Sources */,
 				04ADE1C22DC90E8800B69482 /* SceneDelegate.swift in Sources */,
 				046E98AA2E01E0E800058ADA /* TrackerCategoryStore.swift in Sources */,
@@ -607,14 +607,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		046E98A22E01D04300058ADA /* TrackerStore.xcdatamodeld */ = {
+		048E2DE22E02633F004CE27A /* TrackerStore.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				046E98A32E01D04300058ADA /* TrackerStore.xcdatamodel */,
+				048E2DE32E02633F004CE27A /* TrackerStore.xcdatamodel */,
 			);
-			currentVersion = 046E98A32E01D04300058ADA /* TrackerStore.xcdatamodel */;
-			name = TrackerStore.xcdatamodeld;
-			path = "/Users/nikitakhon/Developer/Yandex Practicum/projects/Tracker/Tracker/Database/TrackerStore.xcdatamodeld";
+			currentVersion = 048E2DE32E02633F004CE27A /* TrackerStore.xcdatamodel */;
+			path = TrackerStore.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
