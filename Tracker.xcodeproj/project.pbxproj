@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		040B299E2E0331C200C6FF6B /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040B299D2E0331C200C6FF6B /* OnboardingViewController.swift */; };
+		040B29A02E0335EE00C6FF6B /* PageContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040B299F2E0335EE00C6FF6B /* PageContentViewController.swift */; };
 		0425E97D2DFFE98200041F4C /* CategoryHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0425E97C2DFFE98200041F4C /* CategoryHeaderView.swift */; };
 		045AA1582DFDA953004A381E /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045AA1572DFDA953004A381E /* ScheduleViewController.swift */; };
 		045AA1602DFDAC8F004A381E /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045AA15F2DFDAC8F004A381E /* ScheduleCell.swift */; };
@@ -44,6 +46,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		040B299D2E0331C200C6FF6B /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		040B299F2E0335EE00C6FF6B /* PageContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageContentViewController.swift; sourceTree = "<group>"; };
 		0425E97C2DFFE98200041F4C /* CategoryHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryHeaderView.swift; sourceTree = "<group>"; };
 		045AA1572DFDA953004A381E /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		045AA15F2DFDAC8F004A381E /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
@@ -93,9 +97,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		040B299C2E03308D00C6FF6B /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				040B299D2E0331C200C6FF6B /* OnboardingViewController.swift */,
+				040B299F2E0335EE00C6FF6B /* PageContentViewController.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		045AA1592DFDAB64004A381E /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				040B299C2E03308D00C6FF6B /* Onboarding */,
 				046B1B8F2DFEA2A200A8CB79 /* TrackDetails */,
 				045AA1632DFE08AC004A381E /* AddTrack */,
 				045AA15C2DFDAB88004A381E /* Tracks */,
@@ -386,6 +400,7 @@
 				04735F5A2DF5FE5900184011 /* TrackerRecord.swift in Sources */,
 				046B1B912DFEA2E600A8CB79 /* TrackDetailsViewController.swift in Sources */,
 				045AA1622DFDEB8A004A381E /* AutoHeightTableView.swift in Sources */,
+				040B29A02E0335EE00C6FF6B /* PageContentViewController.swift in Sources */,
 				04ADE1C02DC90E8800B69482 /* AppDelegate.swift in Sources */,
 				046BD8252E00695000D22452 /* EmojiSelectorView.swift in Sources */,
 				046E98AC2E01E0F400058ADA /* TrackerRecordStore.swift in Sources */,
@@ -396,6 +411,7 @@
 				046E98AA2E01E0E800058ADA /* TrackerCategoryStore.swift in Sources */,
 				046B1B9A2DFECCE500A8CB79 /* UIStackView+Extensions.swift in Sources */,
 				046B1B932DFEA51A00A8CB79 /* TrackerType.swift in Sources */,
+				040B299E2E0331C200C6FF6B /* OnboardingViewController.swift in Sources */,
 				04735F542DF5FA8900184011 /* Tracker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

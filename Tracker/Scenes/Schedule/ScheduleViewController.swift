@@ -70,7 +70,7 @@ final class ScheduleViewController: UIViewController {
         daysTableView.reloadData()
     }
     
-    // MARK: - Private Methods
+    // MARK: - Actions
     
     @objc private func confirmButtonTapped() {
         delegate?.didFinish(with: chosenWeekDays)
