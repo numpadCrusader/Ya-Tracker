@@ -41,12 +41,12 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     init(context: NSManagedObjectContext = CoreDataManager.shared.context) {
         self.context = context
         super.init()
-        try? setupFetchedResultsController()
+        setupFetchedResultsController()
     }
     
     // MARK: - Private Methods
     
-    private func setupFetchedResultsController() throws {
+    private func setupFetchedResultsController() {
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
             NSSortDescriptor(keyPath: \TrackerCategoryCoreData.title, ascending: true)
@@ -60,7 +60,12 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         
         controller.delegate = self
         fetchedResultsController = controller
-        try controller.performFetch()
+        
+        do {
+            try controller.performFetch()
+        } catch {
+            print("TrackerCategoryStore Error: \(error)")
+        }
     }
     
     private func trackerCategory(from entity: TrackerCategoryCoreData) -> TrackerCategory? {

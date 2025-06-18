@@ -47,7 +47,11 @@ final class TrackerStore: TrackerStoreProtocol {
         trackerCoreData.schedule = tracker.schedule as NSObject
         trackerCoreData.category = trackerCategory
 
-        try? context.save()
+        do {
+            try context.save()
+        } catch {
+            print("TrackerStore Error: \(error)")
+        }
     }
     
     static func tracker(from entity: TrackerCoreData) -> Tracker? {
