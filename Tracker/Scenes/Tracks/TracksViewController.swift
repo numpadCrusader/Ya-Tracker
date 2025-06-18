@@ -73,6 +73,8 @@ final class TracksViewController: UIViewController {
     
     // MARK: - Private Properties
     
+    private let trackerCategoryStore = try? TrackerCategoryStore()
+    
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
@@ -84,6 +86,7 @@ final class TracksViewController: UIViewController {
         super.viewDidLoad()
         configure()
         reloadCollectionView()
+        trackerCategoryStore?.delegate = self
     }
     
     // MARK: - Actions
@@ -321,5 +324,13 @@ extension TracksViewController: AddTrackViewControllerDelegate {
         
         reloadCollectionView()
         dismiss(animated: true)
+    }
+}
+
+extension TracksViewController: TrackerCategoryStoreDelegate {
+    
+    func storeDidUpdate() {
+//        visibleCategories = trackerCategoryStore?.trackerCategories ?? []
+//        trackerCollectionView.reloadData()
     }
 }

@@ -8,6 +8,10 @@
 import UIKit
 import CoreData
 
+enum TrackerStoreError: Error {
+    case decodingError
+}
+
 final class TrackerStore {
     
     // MARK: - Private Properties
@@ -44,5 +48,24 @@ final class TrackerStore {
         trackerCoreData.category = trackerCategory
 
         try context.save()
+    }
+    
+    static func tracker(from entity: TrackerCoreData) throws -> Tracker {
+        guard
+            let id = entity.id,
+            let title = entity.title,
+            let emoji = entity.emoji,
+            let color = entity.color as? UIColor,
+            let schedule = entity.schedule as? Set<WeekDay>
+        else {
+            throw TrackerStoreError.decodingError
+        }
+        
+        return Tracker(
+            id: id,
+            title: title,
+            color: color,
+            emoji: emoji,
+            schedule: schedule)
     }
 }
