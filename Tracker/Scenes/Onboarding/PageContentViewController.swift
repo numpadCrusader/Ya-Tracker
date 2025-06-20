@@ -41,8 +41,11 @@ final class PageContentViewController: UIViewController {
         return button
     }()
     
+    // MARK: - Private Properties
+    
     private let infoText: String
     private let backgroundImage: UIImage
+    private let userDefaultsService = UserDefaultsService.shared
     
     // MARK: - Initializers
     
@@ -66,7 +69,8 @@ final class PageContentViewController: UIViewController {
     // MARK: - Actions
     
     @objc private func skipButtonTapped() {
-        
+        userDefaultsService.hasLaunched = true
+        switchToTabBarController()
     }
     
     // MARK: - Private Methods
@@ -104,5 +108,20 @@ final class PageContentViewController: UIViewController {
             skipButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
             skipButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    private func switchToTabBarController() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid window configuration")
+            return
+        }
+        
+        window.rootViewController = TabBarController()
+        
+        UIView.transition(
+            with: window,
+            duration: 0.3,
+            options: .transitionCrossDissolve,
+            animations: {})
     }
 }
