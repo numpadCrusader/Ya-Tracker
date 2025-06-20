@@ -150,7 +150,7 @@ final class TrackDetailsViewController: UIViewController {
     private let trackerType: TrackerType
     private let trackerDetails: [TrackerType.Detail]
     
-    private var chosenCategory: String = "Тестовая категория"
+    private var chosenCategory: (id: String, title: String)?
     private var chosenWeekDays: Set<WeekDay> = [] {
         didSet {
             isCreateButtonEnabled()
@@ -193,6 +193,7 @@ final class TrackDetailsViewController: UIViewController {
         let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
         let emoji = chosenEmoji ?? "🤖"
         let color = chosenColor ?? .systemIndigo
+        let chosenCategory = chosenCategory?.title ?? "Категория"
         
         let tracker = Tracker(
             id: UUID(),
@@ -297,6 +298,17 @@ final class TrackDetailsViewController: UIViewController {
     private func routeToSchedule() {
         let viewController = ScheduleViewController(chosenWeekDays: chosenWeekDays)
         viewController.delegate = self
+        
+        let navController = UINavigationController(rootViewController: viewController)
+        present(navController, animated: true)
+    }
+    
+    private func routeToCategory() {
+        let viewModel = CategoryListViewModel(chosenCategory: chosenCategory)
+        viewModel.delegate = self
+        
+        let viewController = CategoryListViewController(viewModel: viewModel)
+        
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
     }
@@ -354,10 +366,6 @@ extension TrackDetailsViewController: UITableViewDataSource {
             with: trackerDetail,
             isLast: indexPath.row == trackerDetails.count - 1)
         
-        if trackerDetail == .category {
-            cell.setDetailSubtitle(chosenCategory)
-        }
-        
         return cell
     }
 }
@@ -369,8 +377,9 @@ extension TrackDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if trackerDetails[indexPath.row] == .schedule {
-            routeToSchedule()
+        switch trackerDetails[indexPath.row] {
+            case .category: routeToCategory()
+            case .schedule: routeToSchedule()
         }
     }
 }
@@ -446,5 +455,23 @@ extension TrackDetailsViewController: ColorSelectorViewDelegate {
     func didSelectColor(_ color: UIColor) {
         chosenColor = color
         isCreateButtonEnabled()
+    }
+}
+
+// MARK: - CategoryListViewModelDelegate
+
+extension TrackDetailsViewController: CategoryListViewModelDelegate {
+    
+    func didFinish(with category: (id: String, title: String)) {
+        chosenCategory = category
+        
+        guard
+            let index = trackerDetails.firstIndex(where: { $0 == .category}),
+            let cell = trackerDetailsTableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TrackDetailCell
+        else {
+            return
+        }
+        
+        cell.setDetailSubtitle(category.title)
     }
 }

@@ -13,7 +13,7 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 }
 
 protocol TrackerCategoryStoreProtocol {
-    var trackerCategories: [TrackerCategory] { get }
+    var trackerCategories: [TrackerCategoryCoreData] { get }
     var delegate: TrackerCategoryStoreDelegate? { get set }
 }
 
@@ -23,12 +23,8 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     
     weak var delegate: TrackerCategoryStoreDelegate?
     
-    var trackerCategories: [TrackerCategory] {
-        guard let objects = fetchedResultsController?.fetchedObjects else {
-            return []
-        }
-        
-        return objects.compactMap ({ trackerCategory(from: $0) })
+    var trackerCategories: [TrackerCategoryCoreData] {
+        fetchedResultsController?.fetchedObjects ?? []
     }
     
     // MARK: - Private Properties
@@ -66,19 +62,6 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         } catch {
             print("TrackerCategoryStore Error: \(error)")
         }
-    }
-    
-    private func trackerCategory(from entity: TrackerCategoryCoreData) -> TrackerCategory? {
-        guard
-            let title = entity.title,
-            let trackerSet = entity.trackers as? Set<TrackerCoreData>
-        else {
-            return nil
-        }
-        
-        let trackers = trackerSet.compactMap { TrackerStore.tracker(from: $0) }
-        
-        return TrackerCategory(title: title, trackers: trackers)
     }
 }
 
