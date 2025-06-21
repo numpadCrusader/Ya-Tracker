@@ -73,6 +73,7 @@ final class CategoryListViewController: UIViewController {
         
         addSubviews()
         addConstraints()
+        addBindings()
     }
     
     private func addSubviews() {
@@ -93,6 +94,13 @@ final class CategoryListViewController: UIViewController {
             addCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             addCategoryButton.heightAnchor.constraint(equalToConstant: 60)
         ])
+    }
+    
+    private func addBindings() {
+        viewModel.categoriesBinding = { [weak self] _ in
+            guard let self else { return }
+            self.categoriesTableView.reloadData()
+        }
     }
 }
 
