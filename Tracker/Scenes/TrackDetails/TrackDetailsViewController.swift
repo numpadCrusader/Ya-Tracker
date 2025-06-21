@@ -304,10 +304,14 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     private func routeToCategory() {
+        let viewController = CategoryListViewController()
         let viewModel = CategoryListViewModel(chosenCategory: chosenCategory)
-        viewModel.delegate = self
+        let router = CategoryListRouter()
         
-        let viewController = CategoryListViewController(viewModel: viewModel)
+        viewController.viewModel = viewModel
+        viewModel.router = router
+        viewModel.delegate = self
+        router.viewController = viewController
         
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)

@@ -37,20 +37,9 @@ final class CategoryListViewController: UIViewController {
         return button
     }()
     
-    // MARK: - Private Methods
+    // MARK: - Public Properties
     
-    private let viewModel: CategoryListViewModel
-    
-    // MARK: - Initializers
-    
-    init(viewModel: CategoryListViewModel) {
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    var viewModel: CategoryListViewModel?
     
     // MARK: - UIViewController
     
@@ -62,7 +51,7 @@ final class CategoryListViewController: UIViewController {
     // MARK: - Actions
     
     @objc private func addCategoryButtonTapped() {
-        
+        viewModel?.routeToCategoryEditor()
     }
     
     // MARK: - Private Methods
@@ -97,28 +86,33 @@ final class CategoryListViewController: UIViewController {
     }
     
     private func addBindings() {
-        viewModel.categoriesBinding = { [weak self] _ in
+        viewModel?.categoriesBinding = { [weak self] _ in
             guard let self else { return }
             self.categoriesTableView.reloadData()
         }
     }
 }
 
+// MARK: - UITableViewDataSource
+
 extension CategoryListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.categories.count
+        viewModel?.categories.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: CategoryCell.identifier,
-            for: indexPath) as? CategoryCell
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: CategoryCell.identifier,
+                for: indexPath) as? CategoryCell,
+            let viewModel = viewModel?.categories[indexPath.row]
         else {
             return UITableViewCell()
         }
         
-        cell.viewModel = viewModel.categories[indexPath.row]
+        cell.viewModel = viewModel
+        
         return cell
     }
 }

@@ -15,6 +15,7 @@ final class CategoryListViewModel {
     
     // MARK: - Public Properties
     
+    var router: CategoryListRouting?
     var categoriesBinding: Binding<[CategoryCellViewModel]>?
     weak var delegate: CategoryListViewModelDelegate?
     
@@ -39,6 +40,12 @@ final class CategoryListViewModel {
         self.trackerCategoryStore.delegate = self
         self.chosenCategory = chosenCategory
         categories = getCategoriesFromStore()
+    }
+    
+    // MARK: - Public Methods
+    
+    func routeToCategoryEditor() {
+        router?.routeToCategoryEditor(initialText: nil)
     }
     
     // MARK: - Private Methods
