@@ -45,10 +45,16 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     // MARK: - Public Methods
     
     func addNewCategory(title: String) {
-        let category = TrackerCategoryCoreData(context: context)
-        category.title = title
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
         
         do {
+            if let _ = try context.fetch(fetchRequest).first {
+                return
+            }
+            
+            let newCategory = TrackerCategoryCoreData(context: context)
+            newCategory.title = title
             try context.save()
         } catch {
             print("TrackerCategoryStore Error: \(error)")

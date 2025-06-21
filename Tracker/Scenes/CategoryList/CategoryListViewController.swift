@@ -96,9 +96,7 @@ final class CategoryListViewController: UIViewController {
             guard let self else { return }
             self.categoriesTableView.deselectRow(at: indexPath, animated: true)
             self.categoriesTableView.reloadRows(at: [indexPath], with: .automatic)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                self.dismiss(animated: true)
-            }
+            self.dismiss(animated: true)
         }
         
         viewModel?.tableDeselectBinding = { [weak self] indexPath in
