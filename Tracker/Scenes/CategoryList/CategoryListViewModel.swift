@@ -49,7 +49,7 @@ final class CategoryListViewModel {
     }
     
     func routeToCategoryEditor() {
-        router?.routeToCategoryEditor(initialText: nil)
+        router?.routeToCategoryEditor(ofType: .new)
     }
     
     func didSelectCell(at indexPath: IndexPath) {
@@ -76,12 +76,21 @@ final class CategoryListViewModel {
     }
     
     func deleteCell(at indexPath: IndexPath) {
+        guard indexPath.row < categories.count else {
+            return
+        }
+        
         let viewModel = categories[indexPath.row]
         trackerCategoryStore.deleteCategory(with: viewModel.categoryTitle)
     }
     
     func editCell(at indexPath: IndexPath) {
+        guard indexPath.row < categories.count else {
+            return
+        }
         
+        let viewModel = categories[indexPath.row]
+        router?.routeToCategoryEditor(ofType: .edit(viewModel.categoryTitle))
     }
     
     // MARK: - Private Methods

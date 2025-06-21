@@ -8,7 +8,8 @@
 import Foundation
 
 enum CategoryEditorType {
-    case new, edit
+    case new
+    case edit(String)
     
     var title: String {
         switch self {

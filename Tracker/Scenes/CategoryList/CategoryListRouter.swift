@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CategoryListRouting: AnyObject {
-    func routeToCategoryEditor(initialText: String?)
+    func routeToCategoryEditor(ofType type: CategoryEditorType)
 }
 
 final class CategoryListRouter: CategoryListRouting {
@@ -19,8 +19,8 @@ final class CategoryListRouter: CategoryListRouting {
 
     // MARK: - Public Methods
     
-    func routeToCategoryEditor(initialText: String? = nil) {
-        let controller = CategoryEditorViewController(editorType: .new)
+    func routeToCategoryEditor(ofType type: CategoryEditorType) {
+        let controller = CategoryEditorViewController(editorType: type)
         let navController = UINavigationController(rootViewController: controller)
         viewController?.present(navController, animated: true)
     }

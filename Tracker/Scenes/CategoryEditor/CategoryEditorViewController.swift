@@ -95,6 +95,11 @@ final class CategoryEditorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
+        
+        if case .edit(let initialCategoryTitle) = editorType {
+            trackTitleTextField.text = initialCategoryTitle
+            isDoneButtonEnabled()
+        }
     }
     
     // MARK: - Actions
@@ -119,7 +124,14 @@ final class CategoryEditorViewController: UIViewController {
             return
         }
         
-        trackerCategoryStore.addNewCategory(title: title)
+        switch editorType {
+            case .new: 
+                trackerCategoryStore.addNewCategory(title: title)
+                
+            case .edit(let initialCategoryTitle):
+                trackerCategoryStore.updateCategory(with: initialCategoryTitle, to: title)
+        }
+
         dismiss(animated: true)
     }
     
