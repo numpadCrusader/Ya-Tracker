@@ -73,11 +73,16 @@ final class CategoryEditorViewController: UIViewController {
     // MARK: - Private Properties
     
     private let editorType: CategoryEditorType
+    private let trackerCategoryStore: TrackerCategoryStoreProtocol
     
     // MARK: - Initializers
     
-    init(editorType: CategoryEditorType) {
+    init(
+        editorType: CategoryEditorType,
+        trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore()
+    ) {
         self.editorType = editorType
+        self.trackerCategoryStore = trackerCategoryStore
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -106,7 +111,12 @@ final class CategoryEditorViewController: UIViewController {
     }
     
     @objc private func doneButtonTapped() {
+        guard let title = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) else {
+            return
+        }
         
+        trackerCategoryStore.addNewCategory(title: title)
+        dismiss(animated: true)
     }
     
     // MARK: - Private Methods

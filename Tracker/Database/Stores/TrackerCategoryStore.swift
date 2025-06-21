@@ -15,6 +15,8 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 protocol TrackerCategoryStoreProtocol {
     var trackerCategories: [TrackerCategoryCoreData] { get }
     var delegate: TrackerCategoryStoreDelegate? { get set }
+    
+    func addNewCategory(title: String)
 }
 
 final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
@@ -38,6 +40,19 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         self.context = context
         super.init()
         setupFetchedResultsController()
+    }
+    
+    // MARK: - Public Methods
+    
+    func addNewCategory(title: String) {
+        let category = TrackerCategoryCoreData(context: context)
+        category.title = title
+        
+        do {
+            try context.save()
+        } catch {
+            print("TrackerCategoryStore Error: \(error)")
+        }
     }
     
     // MARK: - Private Methods
