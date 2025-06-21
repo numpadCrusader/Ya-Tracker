@@ -53,23 +53,4 @@ final class TrackerStore: TrackerStoreProtocol {
             print("TrackerStore Error: \(error)")
         }
     }
-    
-    static func tracker(from entity: TrackerCoreData) -> Tracker? {
-        guard
-            let id = entity.id,
-            let title = entity.title,
-            let emoji = entity.emoji,
-            let color = entity.color as? UIColor,
-            let schedule = entity.schedule as? Set<WeekDay>
-        else {
-            return nil
-        }
-        
-        return Tracker(
-            id: id,
-            title: title,
-            color: color,
-            emoji: emoji,
-            schedule: schedule)
-    }
 }

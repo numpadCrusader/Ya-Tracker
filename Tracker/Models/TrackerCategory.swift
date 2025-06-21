@@ -22,7 +22,7 @@ extension TrackerCategory {
             return nil
         }
 
-        let trackers = trackerSet.compactMap { TrackerStore.tracker(from: $0) }
+        let trackers = trackerSet.compactMap { Tracker(from: $0) }
         self = TrackerCategory(title: title, trackers: trackers)
     }
 }
