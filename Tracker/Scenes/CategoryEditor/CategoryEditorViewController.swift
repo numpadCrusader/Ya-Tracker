@@ -105,13 +105,17 @@ final class CategoryEditorViewController: UIViewController {
     }
     
     @objc private func clearText() {
-        trackTitleTextField.text = ""
+        trackTitleTextField.text = nil
+        isDoneButtonEnabled()
         isClearTextButtonVisible()
         isWarningLabelHidden(true)
     }
     
     @objc private func doneButtonTapped() {
-        guard let title = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) else {
+        guard
+            let title = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces),
+            !title.isEmpty
+        else {
             return
         }
         

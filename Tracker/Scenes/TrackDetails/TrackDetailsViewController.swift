@@ -150,7 +150,11 @@ final class TrackDetailsViewController: UIViewController {
     private let trackerType: TrackerType
     private let trackerDetails: [TrackerType.Detail]
     
-    private var chosenCategory: String?
+    private var chosenCategory: String? {
+        didSet {
+            isCreateButtonEnabled()
+        }
+    }
     private var chosenWeekDays: Set<WeekDay> = [] {
         didSet {
             isCreateButtonEnabled()
@@ -212,7 +216,8 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     @objc private func clearText() {
-        trackTitleTextField.text = ""
+        trackTitleTextField.text = nil
+        isCreateButtonEnabled()
         isClearTextButtonVisible()
         isWarningLabelHidden(true)
     }
@@ -319,10 +324,13 @@ final class TrackDetailsViewController: UIViewController {
     
     private func isCreateButtonEnabled() {
         let hasTrackTitle = !(trackTitleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true)
+        let hasChosenCategory = chosenCategory != nil ? true : false
         let hasChosenWeekDays = trackerType == .task ? true : !chosenWeekDays.isEmpty
         let hasChosenEmoji = chosenEmoji != nil ? true : false
         let hasChosenColor = chosenColor != nil ? true : false
-        let isEnabled = hasTrackTitle && hasChosenWeekDays && hasChosenEmoji && hasChosenColor
+        
+        let isEnabled = hasTrackTitle && hasChosenCategory
+        && hasChosenWeekDays && hasChosenEmoji && hasChosenColor
         
         createButton.isEnabled = isEnabled
         createButton.backgroundColor = isEnabled ? .ypBlack : .ypGray
