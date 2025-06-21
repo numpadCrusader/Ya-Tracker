@@ -17,6 +17,7 @@ protocol TrackerCategoryStoreProtocol {
     var delegate: TrackerCategoryStoreDelegate? { get set }
     
     func addNewCategory(title: String)
+    func deleteCategory(with title: String)
 }
 
 final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
@@ -56,6 +57,20 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
             let newCategory = TrackerCategoryCoreData(context: context)
             newCategory.title = title
             try context.save()
+        } catch {
+            print("TrackerCategoryStore Error: \(error)")
+        }
+    }
+    
+    func deleteCategory(with title: String) {
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
+        
+        do {
+            if let category = try context.fetch(fetchRequest).first {
+                context.delete(category)
+                try context.save()
+            }
         } catch {
             print("TrackerCategoryStore Error: \(error)")
         }

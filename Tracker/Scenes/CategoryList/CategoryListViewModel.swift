@@ -76,7 +76,8 @@ final class CategoryListViewModel {
     }
     
     func deleteCell(at indexPath: IndexPath) {
-        
+        let viewModel = categories[indexPath.row]
+        trackerCategoryStore.deleteCategory(with: viewModel.categoryTitle)
     }
     
     func editCell(at indexPath: IndexPath) {
