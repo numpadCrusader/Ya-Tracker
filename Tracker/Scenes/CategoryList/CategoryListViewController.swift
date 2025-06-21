@@ -141,6 +141,28 @@ final class CategoryListViewController: UIViewController {
             guard let self else { return }
             self.categoriesTableView.reloadRows(at: [indexPath], with: .automatic)
         }
+        
+        viewModel?.tableDeleteAttempyBinding = { [weak self] indexPath in
+            guard let self else { return }
+            
+            let alert = UIAlertController(
+                title: "Эта категория точно не нужна?",
+                message: nil,
+                preferredStyle: .actionSheet)
+            
+            let deleteAction = UIAlertAction(
+                title: "Удалить",
+                style: .destructive
+            ) { _ in
+                self.viewModel?.deleteCell(at: indexPath)
+            }
+            alert.addAction(deleteAction)
+            
+            let cancelAction = UIAlertAction(title: "Отменить", style: .cancel)
+            alert.addAction(cancelAction)
+            
+            present(alert, animated: true)
+        }
     }
 }
 
@@ -174,5 +196,31 @@ extension CategoryListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         viewModel?.didSelectCell(at: indexPath)
+    }
+    
+    func tableView(
+        _ tableView: UITableView,
+        contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        UIContextMenuConfiguration(
+            identifier: indexPath as NSIndexPath,
+            previewProvider: nil
+        ) { _ in
+            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+                guard let self else { return }
+                self.viewModel?.editCell(at: indexPath)
+            }
+            
+            let deleteAction = UIAction(
+                title: "Удалить",
+                attributes: .destructive
+            ) { [weak self] _ in
+                guard let self else { return }
+                self.viewModel?.didAttempToDeleteCell(at: indexPath)
+            }
+            
+            return UIMenu(title: "", children: [editAction, deleteAction])
+        }
     }
 }

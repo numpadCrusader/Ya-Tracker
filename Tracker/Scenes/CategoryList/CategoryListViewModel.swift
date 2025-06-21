@@ -21,6 +21,7 @@ final class CategoryListViewModel {
     var categoriesBinding: Binding<[CategoryCellViewModel]>?
     var tableSelectBinding: Binding<IndexPath>?
     var tableDeselectBinding: Binding<IndexPath>?
+    var tableDeleteAttempyBinding: Binding<IndexPath>?
     
     // MARK: - Private Properties
     
@@ -56,7 +57,8 @@ final class CategoryListViewModel {
             return
         }
         
-        if let previousIndex = categories.firstIndex(where: \.isSelected) {
+        if let previousIndex = categories.firstIndex(where: \.isSelected),
+           previousIndex != indexPath.row {
             let updatedOldViewModel = categories[previousIndex].copy(withSelected: false)
             categories[previousIndex] = updatedOldViewModel
             tableDeselectBinding?(IndexPath(row: previousIndex, section: 0))
@@ -67,6 +69,18 @@ final class CategoryListViewModel {
         
         delegate?.didFinish(with: selectedViewModel.categoryTitle)
         tableSelectBinding?(indexPath)
+    }
+    
+    func didAttempToDeleteCell(at indexPath: IndexPath) {
+        tableDeleteAttempyBinding?(indexPath)
+    }
+    
+    func deleteCell(at indexPath: IndexPath) {
+        
+    }
+    
+    func editCell(at indexPath: IndexPath) {
+        
     }
     
     // MARK: - Private Methods
