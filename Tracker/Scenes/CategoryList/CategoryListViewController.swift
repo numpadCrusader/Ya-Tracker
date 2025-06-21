@@ -14,6 +14,7 @@ final class CategoryListViewController: UIViewController {
     private lazy var categoriesTableView: AutoHeightTableView = {
         let tableView = AutoHeightTableView()
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identifier)
         tableView.rowHeight = 75
         tableView.separatorStyle = .none
@@ -90,6 +91,20 @@ final class CategoryListViewController: UIViewController {
             guard let self else { return }
             self.categoriesTableView.reloadData()
         }
+        
+        viewModel?.tableSelectBinding = { [weak self] indexPath in
+            guard let self else { return }
+            self.categoriesTableView.deselectRow(at: indexPath, animated: true)
+            self.categoriesTableView.reloadRows(at: [indexPath], with: .automatic)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.dismiss(animated: true)
+            }
+        }
+        
+        viewModel?.tableDeselectBinding = { [weak self] indexPath in
+            guard let self else { return }
+            self.categoriesTableView.reloadRows(at: [indexPath], with: .automatic)
+        }
     }
 }
 
@@ -114,5 +129,14 @@ extension CategoryListViewController: UITableViewDataSource {
         cell.viewModel = viewModel
         
         return cell
+    }
+}
+
+// MARK: - UITableViewDelegate
+
+extension CategoryListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        viewModel?.didSelectCell(at: indexPath)
     }
 }

@@ -16,19 +16,18 @@ final class CategoryListViewModel {
     // MARK: - Public Properties
     
     var router: CategoryListRouting?
-    var categoriesBinding: Binding<[CategoryCellViewModel]>?
     weak var delegate: CategoryListViewModelDelegate?
+    
+    var categoriesBinding: Binding<[CategoryCellViewModel]>?
+    var tableSelectBinding: Binding<IndexPath>?
+    var tableDeselectBinding: Binding<IndexPath>?
     
     // MARK: - Private Properties
     
     private var trackerCategoryStore: TrackerCategoryStoreProtocol
     private var chosenCategory: (id: String, title: String)?
     
-    private(set) var categories: [CategoryCellViewModel] = [] {
-        didSet {
-            categoriesBinding?(categories)
-        }
-    }
+    private(set) var categories: [CategoryCellViewModel] = []
     
     // MARK: - Initializers
     
@@ -40,12 +39,31 @@ final class CategoryListViewModel {
         self.trackerCategoryStore.delegate = self
         self.chosenCategory = chosenCategory
         categories = getCategoriesFromStore()
+        categoriesBinding?(categories)
     }
     
     // MARK: - Public Methods
     
     func routeToCategoryEditor() {
         router?.routeToCategoryEditor(initialText: nil)
+    }
+    
+    func didSelectCell(at indexPath: IndexPath) {
+        guard indexPath.row < categories.count else {
+            return
+        }
+        
+        if let previousIndex = categories.firstIndex(where: \.isSelected) {
+            let updatedOldViewModel = categories[previousIndex].copy(withSelected: false)
+            categories[previousIndex] = updatedOldViewModel
+            tableDeselectBinding?(IndexPath(row: previousIndex, section: 0))
+        }
+        
+        let selectedViewModel = categories[indexPath.row].copy(withSelected: true)
+        categories[indexPath.row] = selectedViewModel
+        
+        delegate?.didFinish(with: (id: selectedViewModel.id, title: selectedViewModel.categoryTitle))
+        tableSelectBinding?(indexPath)
     }
     
     // MARK: - Private Methods
@@ -82,5 +100,6 @@ extension CategoryListViewModel: TrackerCategoryStoreDelegate {
     
     func storeDidUpdate() {
         categories = getCategoriesFromStore()
+        categoriesBinding?(categories)
     }
 }

@@ -38,3 +38,16 @@ struct CategoryCellViewModel {
         }
     }
 }
+
+extension CategoryCellViewModel {
+    
+    func copy(withSelected isSelected: Bool) -> CategoryCellViewModel {
+        CategoryCellViewModel(
+            id: self.id,
+            categoryTitle: self.categoryTitle,
+            isSelected: isSelected,
+            maskedCorners: self.maskedCorners,
+            isSeparatorHidden: self.isSeparatorHidden
+        )
+    }
+}
