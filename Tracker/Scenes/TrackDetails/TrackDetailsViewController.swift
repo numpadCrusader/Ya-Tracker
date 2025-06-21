@@ -150,7 +150,7 @@ final class TrackDetailsViewController: UIViewController {
     private let trackerType: TrackerType
     private let trackerDetails: [TrackerType.Detail]
     
-    private var chosenCategory: (id: String, title: String)?
+    private var chosenCategory: String?
     private var chosenWeekDays: Set<WeekDay> = [] {
         didSet {
             isCreateButtonEnabled()
@@ -193,7 +193,7 @@ final class TrackDetailsViewController: UIViewController {
         let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
         let emoji = chosenEmoji ?? "🤖"
         let color = chosenColor ?? .systemIndigo
-        let chosenCategory = chosenCategory?.title ?? "Категория"
+        let chosenCategory = chosenCategory ?? "Категория"
         
         let tracker = Tracker(
             id: UUID(),
@@ -417,6 +417,24 @@ extension TrackDetailsViewController: ScheduleDelegate {
     }
 }
 
+// MARK: - CategoryListViewModelDelegate
+
+extension TrackDetailsViewController: CategoryListViewModelDelegate {
+    
+    func didFinish(with categoryTitle: String) {
+        chosenCategory = categoryTitle
+        
+        guard
+            let index = trackerDetails.firstIndex(where: { $0 == .category}),
+            let cell = trackerDetailsTableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TrackDetailCell
+        else {
+            return
+        }
+        
+        cell.setDetailSubtitle(categoryTitle)
+    }
+}
+
 // MARK: - UITextFieldDelegate
 
 extension TrackDetailsViewController: UITextFieldDelegate {
@@ -459,23 +477,5 @@ extension TrackDetailsViewController: ColorSelectorViewDelegate {
     func didSelectColor(_ color: UIColor) {
         chosenColor = color
         isCreateButtonEnabled()
-    }
-}
-
-// MARK: - CategoryListViewModelDelegate
-
-extension TrackDetailsViewController: CategoryListViewModelDelegate {
-    
-    func didFinish(with category: (id: String, title: String)) {
-        chosenCategory = category
-        
-        guard
-            let index = trackerDetails.firstIndex(where: { $0 == .category}),
-            let cell = trackerDetailsTableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TrackDetailCell
-        else {
-            return
-        }
-        
-        cell.setDetailSubtitle(category.title)
     }
 }

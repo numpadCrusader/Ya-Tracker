@@ -8,7 +8,6 @@
 import UIKit
 
 struct CategoryCellViewModel {
-    let id: String
     let categoryTitle: String
     let isSelected: Bool
     let maskedCorners: CACornerMask
@@ -43,11 +42,9 @@ extension CategoryCellViewModel {
     
     func copy(withSelected isSelected: Bool) -> CategoryCellViewModel {
         CategoryCellViewModel(
-            id: self.id,
             categoryTitle: self.categoryTitle,
             isSelected: isSelected,
             maskedCorners: self.maskedCorners,
-            isSeparatorHidden: self.isSeparatorHidden
-        )
+            isSeparatorHidden: self.isSeparatorHidden)
     }
 }

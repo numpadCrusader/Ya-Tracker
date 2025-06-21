@@ -8,7 +8,7 @@
 import UIKit
 
 protocol CategoryListViewModelDelegate: AnyObject {
-    func didFinish(with category: (id: String, title: String))
+    func didFinish(with categoryTitle: String)
 }
 
 final class CategoryListViewModel {
@@ -25,7 +25,7 @@ final class CategoryListViewModel {
     // MARK: - Private Properties
     
     private var trackerCategoryStore: TrackerCategoryStoreProtocol
-    private var chosenCategory: (id: String, title: String)?
+    private var chosenCategory: String?
     
     private(set) var categories: [CategoryCellViewModel] = []
     
@@ -33,7 +33,7 @@ final class CategoryListViewModel {
     
     init(
         trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore(),
-        chosenCategory: (String, String)?
+        chosenCategory: String?
     ) {
         self.trackerCategoryStore = trackerCategoryStore
         self.trackerCategoryStore.delegate = self
@@ -62,7 +62,7 @@ final class CategoryListViewModel {
         let selectedViewModel = categories[indexPath.row].copy(withSelected: true)
         categories[indexPath.row] = selectedViewModel
         
-        delegate?.didFinish(with: (id: selectedViewModel.id, title: selectedViewModel.categoryTitle))
+        delegate?.didFinish(with: selectedViewModel.categoryTitle)
         tableSelectBinding?(indexPath)
     }
     
@@ -73,9 +73,8 @@ final class CategoryListViewModel {
         let lastIndex = categories.count - 1
         
         return categories.enumerated().compactMap { (index, entity) in
-            let id = entity.objectID.uriRepresentation().absoluteString
             let title = entity.title ?? ""
-            let isSelected = (chosenCategory?.id == id)
+            let isSelected = chosenCategory ?? "" == entity.title
             
             let maskedCorners: CACornerMask =
             switch index {
@@ -85,7 +84,6 @@ final class CategoryListViewModel {
             }
             
             return CategoryCellViewModel(
-                id: id,
                 categoryTitle: title,
                 isSelected: isSelected,
                 maskedCorners: maskedCorners,
