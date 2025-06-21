@@ -11,6 +11,26 @@ final class CategoryListViewController: UIViewController {
     
     // MARK: - Visual Components
     
+    private lazy var infoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .star
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isHidden = true
+        return imageView
+    }()
+    
+    private lazy var infoLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Привычки и события можно\nобъединить по смыслу"
+        label.numberOfLines = 0
+        label.textColor = .ypBlack
+        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true
+        return label
+    }()
+    
     private lazy var categoriesTableView: AutoHeightTableView = {
         let tableView = AutoHeightTableView()
         tableView.dataSource = self
@@ -47,6 +67,7 @@ final class CategoryListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
+        viewModel?.onViewDidLoad()
     }
     
     // MARK: - Actions
@@ -67,10 +88,20 @@ final class CategoryListViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubviews(categoriesTableView, addCategoryButton)
+        view.addSubviews(infoImageView, infoLabel, categoriesTableView, addCategoryButton)
     }
     
     private func addConstraints() {
+        NSLayoutConstraint.activate([
+            infoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            infoImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            infoLabel.topAnchor.constraint(equalTo: infoImageView.bottomAnchor, constant: 8),
+            infoLabel.centerXAnchor.constraint(equalTo: infoImageView.centerXAnchor)
+        ])
+        
         NSLayoutConstraint.activate([
             categoriesTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             categoriesTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
@@ -87,9 +118,14 @@ final class CategoryListViewController: UIViewController {
     }
     
     private func addBindings() {
-        viewModel?.categoriesBinding = { [weak self] _ in
+        viewModel?.categoriesBinding = { [weak self] categories in
             guard let self else { return }
             self.categoriesTableView.reloadData()
+            
+            let isHidden = categories.isEmpty
+            infoImageView.isHidden = !isHidden
+            infoLabel.isHidden = !isHidden
+            categoriesTableView.isHidden = isHidden
         }
         
         viewModel?.tableSelectBinding = { [weak self] indexPath in

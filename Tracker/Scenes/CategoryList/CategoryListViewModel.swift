@@ -38,11 +38,14 @@ final class CategoryListViewModel {
         self.trackerCategoryStore = trackerCategoryStore
         self.trackerCategoryStore.delegate = self
         self.chosenCategory = chosenCategory
-        categories = getCategoriesFromStore()
-        categoriesBinding?(categories)
     }
     
     // MARK: - Public Methods
+    
+    func onViewDidLoad() {
+        categories = getCategoriesFromStore()
+        categoriesBinding?(categories)
+    }
     
     func routeToCategoryEditor() {
         router?.routeToCategoryEditor(initialText: nil)
