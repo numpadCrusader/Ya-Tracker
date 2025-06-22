@@ -139,6 +139,16 @@ final class TrackDetailsViewController: UIViewController {
         return button
     }()
     
+    private lazy var streakLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypBlack
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     // MARK: - Public Properties
     
     weak var delegate: TrackDetailsDelegate?
@@ -146,6 +156,7 @@ final class TrackDetailsViewController: UIViewController {
     // MARK: - Private Properties
     
     private let trackerStore: TrackerStoreProtocol
+    private let trackerRecordStore: TrackerRecordStoreProtocol
     
     private let trackerDetailsMode: TrackerDetailsMode
     private let trackerDetails: [TrackerDetailsMode.DetailField]
@@ -175,11 +186,15 @@ final class TrackDetailsViewController: UIViewController {
     
     init(
         trackerDetailsMode: TrackerDetailsMode,
-        trackerStore: TrackerStoreProtocol = TrackerStore()
+        trackerStore: TrackerStoreProtocol = TrackerStore(),
+        trackerRecordStore: TrackerRecordStoreProtocol = TrackerRecordStore()
     ) {
         self.trackerDetailsMode = trackerDetailsMode
         trackerDetails = trackerDetailsMode.detailFields
+        
         self.trackerStore = trackerStore
+        self.trackerRecordStore = trackerRecordStore
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -201,6 +216,10 @@ final class TrackDetailsViewController: UIViewController {
             chosenWeekDays = tracker.schedule
             chosenCategory = categoryTitle
             createButton.setTitle("Сохранить", for: .normal)
+            
+            streakLabel.text = trackerRecordStore.recordCount(for: tracker.id).streakLabelText
+            streakLabel.isHidden = false
+            headerStackView.setCustomSpacing(40, after: streakLabel)
         }
     }
     
@@ -259,7 +278,7 @@ final class TrackDetailsViewController: UIViewController {
             colorSelectorView,
             botButtonStackView)
         
-        headerStackView.addArrangedSubviews(trackTitleTextField, warningLabel)
+        headerStackView.addArrangedSubviews(streakLabel, trackTitleTextField, warningLabel)
         botButtonStackView.addArrangedSubviews(cancelButton, createButton)
     }
     
