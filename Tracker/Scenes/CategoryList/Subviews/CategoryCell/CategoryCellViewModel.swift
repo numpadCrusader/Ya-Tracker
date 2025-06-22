@@ -42,9 +42,9 @@ extension CategoryCellViewModel {
     
     func copy(withSelected isSelected: Bool) -> CategoryCellViewModel {
         CategoryCellViewModel(
-            categoryTitle: self.categoryTitle,
+            categoryTitle: categoryTitle,
             isSelected: isSelected,
-            maskedCorners: self.maskedCorners,
-            isSeparatorHidden: self.isSeparatorHidden)
+            maskedCorners: maskedCorners,
+            isSeparatorHidden: isSeparatorHidden)
     }
 }

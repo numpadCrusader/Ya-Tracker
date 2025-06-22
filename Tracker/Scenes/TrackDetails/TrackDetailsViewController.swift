@@ -324,10 +324,10 @@ final class TrackDetailsViewController: UIViewController {
     
     private func isCreateButtonEnabled() {
         let hasTrackTitle = !(trackTitleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true)
-        let hasChosenCategory = chosenCategory != nil ? true : false
+        let hasChosenCategory = chosenCategory != nil
         let hasChosenWeekDays = trackerType == .task ? true : !chosenWeekDays.isEmpty
-        let hasChosenEmoji = chosenEmoji != nil ? true : false
-        let hasChosenColor = chosenColor != nil ? true : false
+        let hasChosenEmoji = chosenEmoji != nil
+        let hasChosenColor = chosenColor != nil
         
         let isEnabled = hasTrackTitle && hasChosenCategory
         && hasChosenWeekDays && hasChosenEmoji && hasChosenColor

@@ -21,7 +21,7 @@ final class CategoryListViewModel {
     var categoriesBinding: Binding<[CategoryCellViewModel]>?
     var tableSelectBinding: Binding<IndexPath>?
     var tableDeselectBinding: Binding<IndexPath>?
-    var tableDeleteAttempyBinding: Binding<IndexPath>?
+    var tableDeleteAttemptBinding: Binding<IndexPath>?
     
     // MARK: - Private Properties
     
@@ -72,7 +72,7 @@ final class CategoryListViewModel {
     }
     
     func didAttempToDeleteCell(at indexPath: IndexPath) {
-        tableDeleteAttempyBinding?(indexPath)
+        tableDeleteAttemptBinding?(indexPath)
     }
     
     func deleteCell(at indexPath: IndexPath) {

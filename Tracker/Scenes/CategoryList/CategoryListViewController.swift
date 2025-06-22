@@ -142,7 +142,7 @@ final class CategoryListViewController: UIViewController {
             self.categoriesTableView.reloadRows(at: [indexPath], with: .automatic)
         }
         
-        viewModel?.tableDeleteAttempyBinding = { [weak self] indexPath in
+        viewModel?.tableDeleteAttemptBinding = { [weak self] indexPath in
             guard let self else { return }
             
             let alert = UIAlertController(
