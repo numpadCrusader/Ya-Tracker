@@ -15,7 +15,7 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Visual Components
     
-    private lazy var trackerCardView: UIView = {
+    private(set) lazy var trackerCardView: UIView = {
         let borderColor: UIColor = .trackerCellGray
         
         let view = UIView()

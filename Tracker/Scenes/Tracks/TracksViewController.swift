@@ -291,6 +291,39 @@ extension TracksViewController: UICollectionViewDelegateFlowLayout {
         let width = availableWidth / itemsPerRow
         return CGSize(width: floor(width), height: 148)
     }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfigurationForItemAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        UIContextMenuConfiguration(
+            identifier: indexPath as NSIndexPath,
+            previewProvider: nil
+        ) { _ in
+            let pin = UIAction(title: "Закрепить") { _ in}
+            let edit = UIAction(title: "Редактировать") { _ in}
+            let delete = UIAction(title: "Удалить", attributes: .destructive) { _ in}
+            return UIMenu(children: [pin, edit, delete])
+        }
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        previewForHighlightingContextMenuWithConfiguration configuration: UIContextMenuConfiguration
+    ) -> UITargetedPreview? {
+        guard
+            let indexPath = configuration.identifier as? IndexPath,
+            let cell = collectionView.cellForItem(at: indexPath) as? TrackerCell
+        else {
+            return nil
+        }
+
+        let parameters = UIPreviewParameters()
+        parameters.visiblePath = UIBezierPath(roundedRect: cell.trackerCardView.bounds, cornerRadius: 16)
+
+        return UITargetedPreview(view: cell.trackerCardView, parameters: parameters)
+    }
 }
 
 // MARK: - TrackerCellDelegate
@@ -332,6 +365,8 @@ extension TracksViewController: AddTrackViewControllerDelegate {
         dismiss(animated: true)
     }
 }
+
+// MARK: - TrackerCategoryStoreDelegate
 
 extension TracksViewController: TrackerCategoryStoreDelegate {
     

@@ -71,7 +71,7 @@ final class CategoryListViewModel {
         tableSelectBinding?(indexPath)
     }
     
-    func didAttempToDeleteCell(at indexPath: IndexPath) {
+    func didAttemptToDeleteCell(at indexPath: IndexPath) {
         tableDeleteAttemptBinding?(indexPath)
     }
     

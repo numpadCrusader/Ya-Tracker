@@ -217,10 +217,10 @@ extension CategoryListViewController: UITableViewDelegate {
                 attributes: .destructive
             ) { [weak self] _ in
                 guard let self else { return }
-                self.viewModel?.didAttempToDeleteCell(at: indexPath)
+                self.viewModel?.didAttemptToDeleteCell(at: indexPath)
             }
             
-            return UIMenu(title: "", children: [editAction, deleteAction])
+            return UIMenu(children: [editAction, deleteAction])
         }
     }
 }
