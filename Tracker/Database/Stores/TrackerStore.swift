@@ -10,6 +10,7 @@ import CoreData
 
 protocol TrackerStoreProtocol {
     func addNewTracker(_ tracker: Tracker, toCategory title: String)
+    func deleteTracker(_ tracker: Tracker)
 }
 
 final class TrackerStore: TrackerStoreProtocol {
@@ -49,6 +50,20 @@ final class TrackerStore: TrackerStoreProtocol {
 
         do {
             try context.save()
+        } catch {
+            print("TrackerStore Error: \(error)")
+        }
+    }
+    
+    func deleteTracker(_ tracker: Tracker) {
+        let fetchRequest = TrackerCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+        
+        do {
+            if let tracker = try context.fetch(fetchRequest).first {
+                context.delete(tracker)
+                try context.save()
+            }
         } catch {
             print("TrackerStore Error: \(error)")
         }

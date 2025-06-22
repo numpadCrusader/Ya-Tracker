@@ -75,6 +75,7 @@ final class TracksViewController: UIViewController {
     
     private var trackerCategoryStore: TrackerCategoryStoreProtocol
     private let trackerRecordStore: TrackerRecordStoreProtocol
+    private let trackerStore: TrackerStoreProtocol
     
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
@@ -85,10 +86,12 @@ final class TracksViewController: UIViewController {
     
     init(
         trackerCategoryStore: TrackerCategoryStoreProtocol = TrackerCategoryStore(),
-        trackerRecordStore: TrackerRecordStoreProtocol = TrackerRecordStore()
+        trackerRecordStore: TrackerRecordStoreProtocol = TrackerRecordStore(),
+        trackerStore: TrackerStoreProtocol = TrackerStore()
     ) {
         self.trackerCategoryStore = trackerCategoryStore
         self.trackerRecordStore = trackerRecordStore
+        self.trackerStore = trackerStore
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -216,6 +219,20 @@ final class TracksViewController: UIViewController {
             TrackerCategory(from: $0)
         }
     }
+    
+    private func deleteTracker(at indexPath: IndexPath) {
+        let sectionIndex = indexPath.section
+        let rowIndex = indexPath.row
+        
+        guard
+            sectionIndex < categories.count,
+            rowIndex < categories[sectionIndex].trackers.count
+        else {
+            return
+        }
+        
+        trackerStore.deleteTracker(categories[sectionIndex].trackers[rowIndex])
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -303,7 +320,15 @@ extension TracksViewController: UICollectionViewDelegateFlowLayout {
         ) { _ in
             let pin = UIAction(title: "Закрепить") { _ in}
             let edit = UIAction(title: "Редактировать") { _ in}
-            let delete = UIAction(title: "Удалить", attributes: .destructive) { _ in}
+            
+            let delete = UIAction(
+                title: "Удалить",
+                attributes: .destructive
+            ) { [weak self] _ in
+                guard let self else { return }
+                self.deleteTracker(at: indexPath)
+            }
+            
             return UIMenu(children: [pin, edit, delete])
         }
     }
