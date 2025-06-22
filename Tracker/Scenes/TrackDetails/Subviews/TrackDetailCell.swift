@@ -69,7 +69,7 @@ final class TrackDetailCell: UITableViewCell {
     
     // MARK: - Public Methods
     
-    func update(with detail: TrackerType.Detail, isLast: Bool) {
+    func update(with detail: TrackerDetailsMode.DetailField, isLast: Bool) {
         detailTitleLabel.text = detail.title
         
         botSeparatorView.isHidden = isLast ? true : false

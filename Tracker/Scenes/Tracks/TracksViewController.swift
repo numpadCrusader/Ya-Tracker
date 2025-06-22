@@ -233,6 +233,29 @@ final class TracksViewController: UIViewController {
         
         trackerStore.deleteTracker(categories[sectionIndex].trackers[rowIndex])
     }
+    
+    private func editTracker(at indexPath: IndexPath) {
+        let sectionIndex = indexPath.section
+        let rowIndex = indexPath.row
+        
+        guard
+            sectionIndex < categories.count,
+            rowIndex < categories[sectionIndex].trackers.count
+        else {
+            return
+        }
+        
+        let categoryTitle = categories[sectionIndex].title
+        let tracker = categories[sectionIndex].trackers[rowIndex]
+        
+        let viewController = TrackDetailsViewController(
+            trackerDetailsMode: .edit(
+                tracker: tracker,
+                ofCategory: categoryTitle))
+        
+        let navController = UINavigationController(rootViewController: viewController)
+        present(navController, animated: true)
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -319,7 +342,11 @@ extension TracksViewController: UICollectionViewDelegateFlowLayout {
             previewProvider: nil
         ) { _ in
             let pin = UIAction(title: "Закрепить") { _ in}
-            let edit = UIAction(title: "Редактировать") { _ in}
+            
+            let edit = UIAction(title: "Редактировать") { [weak self] _ in
+                guard let self else { return }
+                self.editTracker(at: indexPath)
+            }
             
             let delete = UIAction(
                 title: "Удалить",

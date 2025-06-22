@@ -45,15 +45,19 @@ final class ColorCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - UICollectionViewCell
+    
+    override var isSelected: Bool {
+        didSet {
+            borderView.alpha = isSelected ? 1 : 0
+        }
+    }
+    
     // MARK: - Public Methods
     
     func update(with color: UIColor) {
         colorView.backgroundColor = color
         borderView.layer.borderColor = color.withAlphaComponent(0.3).cgColor
-    }
-    
-    func setIsSelected(_ isSelected: Bool) {
-        borderView.alpha = isSelected ? 1 : 0
     }
     
     // MARK: - Private Methods

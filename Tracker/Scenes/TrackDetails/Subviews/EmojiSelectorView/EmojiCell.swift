@@ -33,14 +33,18 @@ final class EmojiCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - UICollectionViewCell
+    
+    override var isSelected: Bool {
+        didSet {
+            contentView.backgroundColor = isSelected ? .ypLightGray : .clear
+        }
+    }
+    
     // MARK: - Public Methods
     
     func update(with emoji: String) {
         emojiLabel.text = emoji
-    }
-    
-    func setIsSelected(_ isSelected: Bool) {
-        contentView.backgroundColor = isSelected ? .ypLightGray : .clear
     }
     
     // MARK: - Private Methods

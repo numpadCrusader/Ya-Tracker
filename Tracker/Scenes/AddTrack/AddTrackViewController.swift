@@ -24,7 +24,7 @@ final class AddTrackViewController: UIViewController {
         button.backgroundColor = .ypBlack
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(newHabbitButtonTapped(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(newHabitButtonTapped(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -55,8 +55,8 @@ final class AddTrackViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc private func newHabbitButtonTapped(_ sender: UIButton) {
-        let viewController = TrackDetailsViewController(trackerType: .habbit)
+    @objc private func newHabitButtonTapped(_ sender: UIButton) {
+        let viewController = TrackDetailsViewController(trackerDetailsMode: .new(.habit))
         viewController.delegate = self
         
         let navController = UINavigationController(rootViewController: viewController)
@@ -64,7 +64,7 @@ final class AddTrackViewController: UIViewController {
     }
     
     @objc private func newTaskButtonTapped(_ sender: UIButton) {
-        let viewController = TrackDetailsViewController(trackerType: .task)
+        let viewController = TrackDetailsViewController(trackerDetailsMode: .new(.task))
         viewController.delegate = self
         
         let navController = UINavigationController(rootViewController: viewController)
