@@ -231,7 +231,25 @@ final class TracksViewController: UIViewController {
             return
         }
         
-        trackerStore.deleteTracker(visibleCategories[sectionIndex].trackers[rowIndex])
+        let trackerToDelete = visibleCategories[sectionIndex].trackers[rowIndex]
+        
+        let alert = UIAlertController(
+            title: "Уверены что хотите удалить трекер?",
+            message: nil,
+            preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(
+            title: "Удалить",
+            style: .destructive
+        ) { [weak self] _ in
+            self?.trackerStore.deleteTracker(trackerToDelete)
+        }
+        alert.addAction(deleteAction)
+        
+        let cancelAction = UIAlertAction(title: "Отменить", style: .cancel)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
     }
     
     private func editTracker(at indexPath: IndexPath) {
