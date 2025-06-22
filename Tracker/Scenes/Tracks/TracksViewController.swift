@@ -102,7 +102,7 @@ final class TracksViewController: UIViewController {
         super.viewDidLoad()
         configure()
         
-        categories = trackerCategoryStore.trackerCategories
+        categories = getCategoriesFromStore()
         reloadCollectionView()
         
         trackerCategoryStore.delegate = self
@@ -209,6 +209,12 @@ final class TracksViewController: UIViewController {
         infoImageView.isHidden = !visibleCategories.isEmpty
         infoLabel.isHidden = !visibleCategories.isEmpty
         trackerCollectionView.isHidden = visibleCategories.isEmpty
+    }
+    
+    private func getCategoriesFromStore() -> [TrackerCategory] {
+        trackerCategoryStore.trackerCategories.compactMap {
+            TrackerCategory(from: $0)
+        }
     }
 }
 
@@ -330,7 +336,7 @@ extension TracksViewController: AddTrackViewControllerDelegate {
 extension TracksViewController: TrackerCategoryStoreDelegate {
     
     func storeDidUpdate() {
-        categories = trackerCategoryStore.trackerCategories
+        categories = getCategoriesFromStore()
         reloadCollectionView()
     }
 }

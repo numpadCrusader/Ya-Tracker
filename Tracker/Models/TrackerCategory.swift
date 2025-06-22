@@ -11,3 +11,18 @@ struct TrackerCategory {
     let title: String
     let trackers: [Tracker]
 }
+
+extension TrackerCategory {
+    
+    init?(from entity: TrackerCategoryCoreData) {
+        guard
+            let title = entity.title,
+            let trackerSet = entity.trackers as? Set<TrackerCoreData>
+        else {
+            return nil
+        }
+
+        let trackers = trackerSet.compactMap { Tracker(from: $0) }
+        self = TrackerCategory(title: title, trackers: trackers)
+    }
+}

@@ -13,8 +13,12 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 }
 
 protocol TrackerCategoryStoreProtocol {
-    var trackerCategories: [TrackerCategory] { get }
+    var trackerCategories: [TrackerCategoryCoreData] { get }
     var delegate: TrackerCategoryStoreDelegate? { get set }
+    
+    func addNewCategory(title: String)
+    func deleteCategory(with title: String)
+    func updateCategory(with title: String, to newTitle: String)
 }
 
 final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
@@ -23,12 +27,8 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     
     weak var delegate: TrackerCategoryStoreDelegate?
     
-    var trackerCategories: [TrackerCategory] {
-        guard let objects = fetchedResultsController?.fetchedObjects else {
-            return []
-        }
-        
-        return objects.compactMap ({ trackerCategory(from: $0) })
+    var trackerCategories: [TrackerCategoryCoreData] {
+        fetchedResultsController?.fetchedObjects ?? []
     }
     
     // MARK: - Private Properties
@@ -42,6 +42,62 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         self.context = context
         super.init()
         setupFetchedResultsController()
+    }
+    
+    // MARK: - Public Methods
+    
+    func addNewCategory(title: String) {
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
+        
+        do {
+            if let _ = try context.fetch(fetchRequest).first {
+                return
+            }
+            
+            let newCategory = TrackerCategoryCoreData(context: context)
+            newCategory.title = title
+            try context.save()
+        } catch {
+            print("TrackerCategoryStore Error: \(error)")
+        }
+    }
+    
+    func deleteCategory(with title: String) {
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
+        
+        do {
+            if let category = try context.fetch(fetchRequest).first {
+                context.delete(category)
+                try context.save()
+            }
+        } catch {
+            print("TrackerCategoryStore Error: \(error)")
+        }
+    }
+    
+    func updateCategory(with title: String, to newTitle: String) {
+        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
+        fetchRequest.fetchLimit = 1
+        
+        let duplicateCheckRequest = TrackerCategoryCoreData.fetchRequest()
+        duplicateCheckRequest.predicate = NSPredicate(format: "title == %@", newTitle)
+        duplicateCheckRequest.fetchLimit = 1
+        
+        do {
+            if let _ = try context.fetch(duplicateCheckRequest).first {
+                return
+            }
+            
+            if let category = try context.fetch(fetchRequest).first {
+                category.title = newTitle
+                try context.save()
+            }
+        } catch {
+            print("TrackerCategoryStore Error: \(error)")
+        }
     }
     
     // MARK: - Private Methods
@@ -66,19 +122,6 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         } catch {
             print("TrackerCategoryStore Error: \(error)")
         }
-    }
-    
-    private func trackerCategory(from entity: TrackerCategoryCoreData) -> TrackerCategory? {
-        guard
-            let title = entity.title,
-            let trackerSet = entity.trackers as? Set<TrackerCoreData>
-        else {
-            return nil
-        }
-        
-        let trackers = trackerSet.compactMap { TrackerStore.tracker(from: $0) }
-        
-        return TrackerCategory(title: title, trackers: trackers)
     }
 }
 
