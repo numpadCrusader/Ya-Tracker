@@ -73,18 +73,21 @@ final class TrackerStore: TrackerStoreProtocol {
     func updateTracker(with newTracker: Tracker, toCategory newTitle: String) {
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", newTracker.id as CVarArg)
-
+        
         do {
             guard let oldTracker = try context.fetch(fetchRequest).first else {
                 return
             }
-
+            
             oldTracker.title = newTracker.title
             oldTracker.emoji = newTracker.emoji
             oldTracker.color = newTracker.color
             oldTracker.schedule = newTracker.schedule as NSObject
-
-            if oldTracker.category?.title != newTitle {
+            
+            if oldTracker.category?.title == newTitle {
+                oldTracker.category?.willChangeValue(forKey: "trackers")
+                oldTracker.category?.didChangeValue(forKey: "trackers")
+            } else {
                 let categoryFetch = TrackerCategoryCoreData.fetchRequest()
                 categoryFetch.predicate = NSPredicate(format: "title == %@", newTitle)
                 
@@ -95,10 +98,10 @@ final class TrackerStore: TrackerStoreProtocol {
                     trackerCategory = TrackerCategoryCoreData(context: context)
                     trackerCategory.title = newTitle
                 }
-
+                
                 oldTracker.category = trackerCategory
             }
-
+            
             try context.save()
         } catch {
             print("TrackerStore Error: \(error)")
