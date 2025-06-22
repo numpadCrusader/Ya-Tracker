@@ -225,13 +225,13 @@ final class TracksViewController: UIViewController {
         let rowIndex = indexPath.row
         
         guard
-            sectionIndex < categories.count,
-            rowIndex < categories[sectionIndex].trackers.count
+            sectionIndex < visibleCategories.count,
+            rowIndex < visibleCategories[sectionIndex].trackers.count
         else {
             return
         }
         
-        trackerStore.deleteTracker(categories[sectionIndex].trackers[rowIndex])
+        trackerStore.deleteTracker(visibleCategories[sectionIndex].trackers[rowIndex])
     }
     
     private func editTracker(at indexPath: IndexPath) {
@@ -239,14 +239,14 @@ final class TracksViewController: UIViewController {
         let rowIndex = indexPath.row
         
         guard
-            sectionIndex < categories.count,
-            rowIndex < categories[sectionIndex].trackers.count
+            sectionIndex < visibleCategories.count,
+            rowIndex < visibleCategories[sectionIndex].trackers.count
         else {
             return
         }
         
-        let categoryTitle = categories[sectionIndex].title
-        let tracker = categories[sectionIndex].trackers[rowIndex]
+        let categoryTitle = visibleCategories[sectionIndex].title
+        let tracker = visibleCategories[sectionIndex].trackers[rowIndex]
         
         let viewController = TrackDetailsViewController(
             trackerDetailsMode: .edit(

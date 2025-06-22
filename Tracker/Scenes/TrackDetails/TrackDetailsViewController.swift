@@ -211,20 +211,19 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     @objc private func createButtonTapped() {
-        let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
-        let emoji = chosenEmoji ?? "🤖"
-        let color = chosenColor ?? .systemIndigo
         let chosenCategory = chosenCategory ?? "Категория"
         
-        let tracker = Tracker(
-            id: UUID(),
-            title: trackTitle,
-            color: color,
-            emoji: emoji,
-            schedule: chosenWeekDays)
-        
-        trackerStore.addNewTracker(tracker, toCategory: chosenCategory)
-        delegate?.didFinishAddingTrack()
+        switch trackerDetailsMode {
+            case .new:
+                let tracker = makeTracker(with: UUID())
+                trackerStore.addNewTracker(tracker, toCategory: chosenCategory)
+                delegate?.didFinishAddingTrack()
+                
+            case .edit(let oldTracker, _):
+                let updatedTracker = makeTracker(with: oldTracker.id)
+                trackerStore.updateTracker(with: updatedTracker, toCategory: chosenCategory)
+                dismiss(animated: true)
+        }
     }
     
     @objc private func textFieldDidChange() {
@@ -370,6 +369,19 @@ final class TrackDetailsViewController: UIViewController {
         UIView.animate(withDuration: 0.2) { [weak self] in
             self?.warningLabel.isHidden = isHidden
         }
+    }
+    
+    private func makeTracker(with uuid: UUID) -> Tracker {
+        let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
+        let emoji = chosenEmoji ?? "🤖"
+        let color = chosenColor ?? .systemIndigo
+        
+        return Tracker(
+            id: uuid,
+            title: trackTitle,
+            color: color,
+            emoji: emoji,
+            schedule: chosenWeekDays)
     }
 }
 
