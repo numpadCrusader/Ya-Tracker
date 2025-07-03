@@ -235,6 +235,21 @@ final class TracksViewController: UIViewController {
         trackerStore.pinTracker(trackerToPin)
     }
     
+    private func unpinTracker(at indexPath: IndexPath) {
+        let sectionIndex = indexPath.section
+        let rowIndex = indexPath.row
+        
+        guard
+            sectionIndex < visibleCategories.count,
+            rowIndex < visibleCategories[sectionIndex].trackers.count
+        else {
+            return
+        }
+        
+        let trackerToPin = visibleCategories[sectionIndex].trackers[rowIndex]
+        trackerStore.unpinTracker(trackerToPin)
+    }
+    
     private func deleteTracker(at indexPath: IndexPath) {
         let sectionIndex = indexPath.section
         let rowIndex = indexPath.row
@@ -370,29 +385,27 @@ extension TracksViewController: UICollectionViewDelegateFlowLayout {
         contextMenuConfigurationForItemAt indexPath: IndexPath,
         point: CGPoint
     ) -> UIContextMenuConfiguration? {
-        UIContextMenuConfiguration(
+        let isPinned = visibleCategories[indexPath.section].title == GlobalConstants.pinCategory
+        
+        return UIContextMenuConfiguration(
             identifier: indexPath as NSIndexPath,
             previewProvider: nil
-        ) { _ in
-            let pin = UIAction(title: "Закрепить") { [weak self] _ in
-                guard let self else { return }
-                self.pinTracker(at: indexPath)
+        ) { [weak self] _ in
+            guard let self else { return nil }
+            
+            let pinAction = UIAction(title: isPinned ? "Открепить" : "Закрепить") { _ in
+                isPinned ? self.unpinTracker(at: indexPath) : self.pinTracker(at: indexPath)
             }
             
-            let edit = UIAction(title: "Редактировать") { [weak self] _ in
-                guard let self else { return }
+            let editAction = UIAction(title: "Редактировать") { _ in
                 self.editTracker(at: indexPath)
             }
             
-            let delete = UIAction(
-                title: "Удалить",
-                attributes: .destructive
-            ) { [weak self] _ in
-                guard let self else { return }
+            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { _ in
                 self.deleteTracker(at: indexPath)
             }
             
-            return UIMenu(children: [pin, edit, delete])
+            return UIMenu(children: [pinAction, editAction, deleteAction])
         }
     }
     

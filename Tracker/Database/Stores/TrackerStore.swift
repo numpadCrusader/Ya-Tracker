@@ -121,7 +121,7 @@ final class TrackerStore: TrackerStoreProtocol {
             }
             
             existingTracker.originCategoryTitle = currentCategoryTitle
-            let trackerCategory = fetchOrCreateCategory(withTitle: "Закрепленные")
+            let trackerCategory = fetchOrCreateCategory(withTitle: GlobalConstants.pinCategory)
             existingTracker.category = trackerCategory
             
             try context.save()
