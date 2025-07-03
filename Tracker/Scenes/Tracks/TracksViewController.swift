@@ -220,6 +220,21 @@ final class TracksViewController: UIViewController {
         }
     }
     
+    private func pinTracker(at indexPath: IndexPath) {
+        let sectionIndex = indexPath.section
+        let rowIndex = indexPath.row
+        
+        guard
+            sectionIndex < visibleCategories.count,
+            rowIndex < visibleCategories[sectionIndex].trackers.count
+        else {
+            return
+        }
+        
+        let trackerToPin = visibleCategories[sectionIndex].trackers[rowIndex]
+        trackerStore.pinTracker(trackerToPin)
+    }
+    
     private func deleteTracker(at indexPath: IndexPath) {
         let sectionIndex = indexPath.section
         let rowIndex = indexPath.row
@@ -359,7 +374,10 @@ extension TracksViewController: UICollectionViewDelegateFlowLayout {
             identifier: indexPath as NSIndexPath,
             previewProvider: nil
         ) { _ in
-            let pin = UIAction(title: "Закрепить") { _ in}
+            let pin = UIAction(title: "Закрепить") { [weak self] _ in
+                guard let self else { return }
+                self.pinTracker(at: indexPath)
+            }
             
             let edit = UIAction(title: "Редактировать") { [weak self] _ in
                 guard let self else { return }

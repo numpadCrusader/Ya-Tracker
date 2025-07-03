@@ -5,13 +5,15 @@
 //  Created by Nikita Khon on 17.06.2025.
 //
 
-import UIKit
+import Foundation
 import CoreData
 
 protocol TrackerStoreProtocol {
     func addNewTracker(_ tracker: Tracker, toCategory title: String)
     func deleteTracker(_ tracker: Tracker)
     func updateTracker(with newTracker: Tracker, toCategory newTitle: String)
+    func pinTracker(_ tracker: Tracker)
+    func unpinTracker(_ tracker: Tracker)
 }
 
 final class TrackerStore: TrackerStoreProtocol {
@@ -105,6 +107,67 @@ final class TrackerStore: TrackerStoreProtocol {
             try context.save()
         } catch {
             print("TrackerStore Error: \(error)")
+        }
+    }
+    
+    func pinTracker(_ tracker: Tracker) {
+        do {
+            guard
+                let existingTracker = fetchTracker(by: tracker.id),
+                let currentCategoryTitle = existingTracker.category?.title
+            else {
+                print("TrackerStore Error: Pin conditions are not met")
+                return
+            }
+            
+            existingTracker.originCategoryTitle = currentCategoryTitle
+            let trackerCategory = fetchOrCreateCategory(withTitle: "Закрепленные")
+            existingTracker.category = trackerCategory
+            
+            try context.save()
+        } catch {
+            print("TrackerStore Error: \(error)")
+        }
+    }
+    
+    func unpinTracker(_ tracker: Tracker) {
+        do {
+            guard
+                let existingTracker = fetchTracker(by: tracker.id),
+                let originCategoryTitle = existingTracker.originCategoryTitle
+            else {
+                print("TrackerStore Error: Unpin conditions are not met")
+                return
+            }
+            
+            let trackerCategory = fetchOrCreateCategory(withTitle: originCategoryTitle)
+            existingTracker.category = trackerCategory
+            existingTracker.originCategoryTitle = nil
+            
+            try context.save()
+        } catch {
+            print("TrackerStore Error: \(error)")
+        }
+    }
+    
+    // MARK: - Private Methods
+    
+    private func fetchTracker(by id: UUID) -> TrackerCoreData? {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        return try? context.fetch(request).first
+    }
+    
+    private func fetchOrCreateCategory(withTitle title: String) -> TrackerCategoryCoreData {
+        let request = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "title == %@", title)
+        
+        if let category = try? context.fetch(request).first {
+            return category
+        } else {
+            let newCategory = TrackerCategoryCoreData(context: context)
+            newCategory.title = title
+            return newCategory
         }
     }
 }
