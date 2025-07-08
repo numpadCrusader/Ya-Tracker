@@ -335,9 +335,11 @@ extension TracksViewController: UICollectionViewDataSource {
         let trackerModel = visibleCategories[indexPath.section].trackers[indexPath.row]
         let isDoneToday = trackerRecordStore.hasRecord(for: trackerModel.id, on: currentDate)
         let streakCount = trackerRecordStore.recordCount(for: trackerModel.id)
+        let isPinned = visibleCategories[indexPath.section].title == GlobalConstants.pinCategory
         
         cell.update(with: trackerModel, and: streakCount)
         cell.setIsDone(isDoneToday)
+        cell.setIsPinned(isPinned)
         cell.delegate = self
         
         return cell

@@ -43,6 +43,15 @@ final class TrackerCell: UICollectionViewCell {
         return label
     }()
     
+    private lazy var pinImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .pinIcon
+        imageView.contentMode = .center
+        imageView.isHidden = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -101,6 +110,10 @@ final class TrackerCell: UICollectionViewCell {
         actionButton.setImage(buttonImage, for: .normal)
     }
     
+    func setIsPinned(_ isPinned: Bool) {
+        pinImageView.isHidden = !isPinned
+    }
+    
     // MARK: - Actions
     
     @objc private func actionButtonTapped(_ sender: UIButton) {
@@ -116,7 +129,7 @@ final class TrackerCell: UICollectionViewCell {
     
     private func addSubviews() {
         contentView.addSubviews(trackerCardView, streakLabel, actionButton)
-        trackerCardView.addSubviews(emojiView, titleLabel)
+        trackerCardView.addSubviews(emojiView, titleLabel, pinImageView)
         emojiView.addSubview(emojiLabel)
     }
     
@@ -138,6 +151,11 @@ final class TrackerCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             emojiLabel.centerXAnchor.constraint(equalTo: emojiView.centerXAnchor),
             emojiLabel.centerYAnchor.constraint(equalTo: emojiView.centerYAnchor)
+        ])
+        
+        NSLayoutConstraint.activate([
+            pinImageView.topAnchor.constraint(equalTo: trackerCardView.topAnchor, constant: 12),
+            pinImageView.trailingAnchor.constraint(equalTo: trackerCardView.trailingAnchor, constant: -4)
         ])
         
         NSLayoutConstraint.activate([
