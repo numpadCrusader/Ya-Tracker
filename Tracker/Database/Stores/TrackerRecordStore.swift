@@ -5,7 +5,7 @@
 //  Created by Nikita Khon on 17.06.2025.
 //
 
-import UIKit
+import Foundation
 import CoreData
 
 protocol TrackerRecordStoreProtocol: AnyObject {

@@ -8,5 +8,5 @@
 import Foundation
 
 enum GlobalConstants {
-    static let pinCategory = "Закрепленные"
+    static let pinCategory = "Закреплённые"
 }

@@ -31,17 +31,7 @@ final class TrackerStore: TrackerStoreProtocol {
     // MARK: - Public Methods
     
     func addNewTracker(_ tracker: Tracker, toCategory title: String) {
-        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
-        
-        let trackerCategory: TrackerCategoryCoreData
-        
-        if let existingCategory = try? context.fetch(fetchRequest).first {
-            trackerCategory = existingCategory
-        } else {
-            trackerCategory = TrackerCategoryCoreData(context: context)
-            trackerCategory.title = title
-        }
+        let trackerCategory = fetchOrCreateCategory(withTitle: title)
         
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.id = tracker.id
@@ -59,25 +49,23 @@ final class TrackerStore: TrackerStoreProtocol {
     }
     
     func deleteTracker(_ tracker: Tracker) {
-        let fetchRequest = TrackerCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
-        
         do {
-            if let tracker = try context.fetch(fetchRequest).first {
-                context.delete(tracker)
-                try context.save()
+            guard let existingTracker = fetchTracker(by: tracker.id) else {
+                print("TrackerStore Error: Could not find tracker to delete")
+                return
             }
+            
+            context.delete(existingTracker)
+            try context.save()
         } catch {
             print("TrackerStore Error: \(error)")
         }
     }
     
     func updateTracker(with newTracker: Tracker, toCategory newTitle: String) {
-        let fetchRequest = TrackerCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", newTracker.id as CVarArg)
-        
         do {
-            guard let oldTracker = try context.fetch(fetchRequest).first else {
+            guard let oldTracker = fetchTracker(by: newTracker.id) else {
+                print("TrackerStore Error: Update conditions are not met")
                 return
             }
             
@@ -90,17 +78,7 @@ final class TrackerStore: TrackerStoreProtocol {
                 oldTracker.category?.willChangeValue(forKey: "trackers")
                 oldTracker.category?.didChangeValue(forKey: "trackers")
             } else {
-                let categoryFetch = TrackerCategoryCoreData.fetchRequest()
-                categoryFetch.predicate = NSPredicate(format: "title == %@", newTitle)
-                
-                let trackerCategory: TrackerCategoryCoreData
-                if let existingCategory = try context.fetch(categoryFetch).first {
-                    trackerCategory = existingCategory
-                } else {
-                    trackerCategory = TrackerCategoryCoreData(context: context)
-                    trackerCategory.title = newTitle
-                }
-                
+                let trackerCategory = fetchOrCreateCategory(withTitle: newTitle)
                 oldTracker.category = trackerCategory
             }
             
@@ -167,6 +145,7 @@ final class TrackerStore: TrackerStoreProtocol {
         } else {
             let newCategory = TrackerCategoryCoreData(context: context)
             newCategory.title = title
+            newCategory.sortPriority = title == GlobalConstants.pinCategory ? 0 : 1
             return newCategory
         }
     }
