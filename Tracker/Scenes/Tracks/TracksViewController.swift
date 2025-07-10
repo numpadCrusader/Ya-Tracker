@@ -71,6 +71,18 @@ final class TracksViewController: UIViewController {
         return view
     }()
     
+    private lazy var filterButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.backgroundColor = .ypBlue
+        button.setTitle("Фильтры", for: .normal)
+        button.setTitleColor(.ypWhite, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
+        button.layer.cornerRadius = 16
+        button.layer.masksToBounds = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     // MARK: - Private Properties
     
     private var trackerCategoryStore: TrackerCategoryStoreProtocol
@@ -137,7 +149,12 @@ final class TracksViewController: UIViewController {
     }
     
     private func addSubviews() {
-        view.addSubviews(infoImageView, infoLabel, trackerCollectionView, tabBarSeparatorView)
+        view.addSubviews(
+            infoImageView,
+            infoLabel,
+            trackerCollectionView,
+            tabBarSeparatorView,
+            filterButton)
     }
     
     private func addConstraints() {
@@ -162,6 +179,13 @@ final class TracksViewController: UIViewController {
             tabBarSeparatorView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             tabBarSeparatorView.widthAnchor.constraint(equalTo: view.widthAnchor),
             tabBarSeparatorView.heightAnchor.constraint(equalToConstant: 0.5)
+        ])
+        
+        NSLayoutConstraint.activate([
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            filterButton.widthAnchor.constraint(equalToConstant: 114),
+            filterButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
