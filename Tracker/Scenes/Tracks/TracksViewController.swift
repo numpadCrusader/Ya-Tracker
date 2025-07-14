@@ -79,6 +79,7 @@ final class TracksViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
+        button.addTarget(self, action: #selector(filterButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -91,8 +92,10 @@ final class TracksViewController: UIViewController {
     
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
+    
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate = Date().dateOnly
+    private var currentFilter: TrackerFilter?
     
     // MARK: - Initializers
     
@@ -135,6 +138,13 @@ final class TracksViewController: UIViewController {
     @objc private func dateChanged(_ sender: UIDatePicker) {
         currentDate = sender.date.dateOnly
         reloadCollectionView()
+    }
+    
+    @objc private func filterButtonTapped() {
+        let viewController = FilterListViewController(chosenFilter: currentFilter)
+        viewController.delegate = self
+        let navController = UINavigationController(rootViewController: viewController)
+        present(navController, animated: true)
     }
     
     // MARK: - Private Methods
@@ -500,5 +510,23 @@ extension TracksViewController: TrackerCategoryStoreDelegate {
     func storeDidUpdate() {
         categories = getCategoriesFromStore()
         reloadCollectionView()
+    }
+}
+
+// MARK: - FilterListDelegate
+
+extension TracksViewController: FilterListDelegate {
+    
+    func didFinish(with filter: TrackerFilter) {
+        switch filter {
+            case .all:
+                break
+            case .today:
+                break
+            case .done:
+                break
+            case .undone:
+                break
+        }
     }
 }
