@@ -43,6 +43,7 @@ final class TracksViewController: UIViewController {
         collectionView.delegate = self
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
         collectionView.contentInset.top = 24
+        collectionView.contentInset.bottom = 60
         
         collectionView.register(
             CategoryHeaderView.self,
@@ -532,7 +533,6 @@ extension TracksViewController: FilterListDelegate {
         switch filter {
             case .all, .today:
                 currentFilter = nil
-                filterButton.backgroundColor = .ypBlue
                 
                 if filter == .today {
                     let today = Date()
@@ -542,9 +542,21 @@ extension TracksViewController: FilterListDelegate {
                 
             case .done, .undone:
                 currentFilter = filter
-                filterButton.backgroundColor = .ypRed
         }
         
+        updateUIForFiltering()
         reloadCollectionView()
+    }
+    
+    private func updateUIForFiltering() {
+        if let currentFilter {
+            filterButton.backgroundColor = .ypRed
+            infoLabel.text = "Ничего не найдено"
+            infoImageView.image = .emptySearchIcon
+        } else {
+            filterButton.backgroundColor = .ypBlue
+            infoLabel.text = "Что будем отслеживать?"
+            infoImageView.image = .star
+        }
     }
 }
