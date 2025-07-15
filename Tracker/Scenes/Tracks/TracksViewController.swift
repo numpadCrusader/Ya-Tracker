@@ -232,13 +232,9 @@ final class TracksViewController: UIViewController {
                 let isScheduledToday = tracker.schedule.contains(currentWeekDay)
                 let isOneTimeTask = tracker.schedule.isEmpty
                 
-                var shouldInclude = false
-                
-                if isOneTimeTask {
-                    shouldInclude = neverCompleted || completedToday
-                } else {
-                    shouldInclude = isScheduledToday
-                }
+                let shouldInclude = isOneTimeTask ?
+                    (neverCompleted || completedToday)
+                    : isScheduledToday
                 
                 if !shouldInclude { return false }
                 
@@ -256,9 +252,11 @@ final class TracksViewController: UIViewController {
         visibleCategories = filteredCategories
         trackerCollectionView.reloadData()
         
-        infoImageView.isHidden = !visibleCategories.isEmpty
-        infoLabel.isHidden = !visibleCategories.isEmpty
-        trackerCollectionView.isHidden = visibleCategories.isEmpty
+        let isEmptyResult = visibleCategories.isEmpty
+        infoImageView.isHidden = !isEmptyResult
+        infoLabel.isHidden = !isEmptyResult
+        trackerCollectionView.isHidden = isEmptyResult
+        filterButton.isHidden = currentFilter == nil && isEmptyResult
     }
     
     private func getCategoriesFromStore() -> [TrackerCategory] {
@@ -532,17 +530,19 @@ extension TracksViewController: FilterListDelegate {
     
     func didFinish(with filter: TrackerFilter) {
         switch filter {
-            case .all: 
+            case .all, .today:
                 currentFilter = nil
+                filterButton.backgroundColor = .ypBlue
                 
-            case .today:
-                let today = Date()
-                datePicker.date = today
-                currentDate = today.dateOnly
-                currentFilter = nil
+                if filter == .today {
+                    let today = Date()
+                    datePicker.date = today
+                    currentDate = today.dateOnly
+                }
                 
             case .done, .undone:
                 currentFilter = filter
+                filterButton.backgroundColor = .ypRed
         }
         
         reloadCollectionView()
