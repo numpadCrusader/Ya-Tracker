@@ -227,13 +227,26 @@ final class TracksViewController: UIViewController {
         
         let filteredCategories = categories.compactMap { category -> TrackerCategory? in
             let combinedTrackers = category.trackers.filter { tracker in
-                if tracker.schedule.isEmpty {
-                    let notCompleted = trackerRecordStore.recordCount(for: tracker.id) == 0
-                    let completedToday = trackerRecordStore.hasRecord(for: tracker.id, on: currentDate)
-                    return notCompleted || completedToday
+                let neverCompleted = trackerRecordStore.recordCount(for: tracker.id) == 0
+                let completedToday = trackerRecordStore.hasRecord(for: tracker.id, on: currentDate)
+                let isScheduledToday = tracker.schedule.contains(currentWeekDay)
+                let isOneTimeTask = tracker.schedule.isEmpty
+                
+                var shouldInclude = false
+                
+                if isOneTimeTask {
+                    shouldInclude = neverCompleted || completedToday
+                } else {
+                    shouldInclude = isScheduledToday
                 }
                 
-                return tracker.schedule.contains(currentWeekDay)
+                if !shouldInclude { return false }
+                
+                switch currentFilter {
+                    case .done: return completedToday
+                    case .undone: return !completedToday
+                    default: return true
+                }
             }
             
             return combinedTrackers.isEmpty ? nil
@@ -519,14 +532,19 @@ extension TracksViewController: FilterListDelegate {
     
     func didFinish(with filter: TrackerFilter) {
         switch filter {
-            case .all:
-                break
+            case .all: 
+                currentFilter = nil
+                
             case .today:
-                break
-            case .done:
-                break
-            case .undone:
-                break
+                let today = Date()
+                datePicker.date = today
+                currentDate = today.dateOnly
+                currentFilter = nil
+                
+            case .done, .undone:
+                currentFilter = filter
         }
+        
+        reloadCollectionView()
     }
 }

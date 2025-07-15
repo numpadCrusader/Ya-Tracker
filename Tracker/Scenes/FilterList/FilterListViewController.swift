@@ -116,5 +116,6 @@ extension FilterListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         delegate?.didFinish(with: allFilters[indexPath.row])
+        dismiss(animated: true)
     }
 }
