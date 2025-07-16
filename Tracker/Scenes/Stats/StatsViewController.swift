@@ -13,5 +13,7 @@ final class StatsViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .white
+        
+        navigationItem.title = LocalizedStrings.statsSceneTitle
     }
 }

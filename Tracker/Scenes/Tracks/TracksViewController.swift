@@ -75,7 +75,7 @@ final class TracksViewController: UIViewController {
     private lazy var filterButton: UIButton = {
         let button = UIButton(type: .custom)
         button.backgroundColor = .ypBlue
-        button.setTitle("Фильтры", for: .normal)
+        button.setTitle(LocalizedStrings.filterButtonTitle, for: .normal)
         button.setTitleColor(.ypWhite, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.cornerRadius = 16
@@ -209,7 +209,7 @@ final class TracksViewController: UIViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
-        title = "Трекеры"
+        navigationItem.title = LocalizedStrings.trackersSceneTitle
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
     }
@@ -549,7 +549,7 @@ extension TracksViewController: FilterListDelegate {
     }
     
     private func updateUIForFiltering() {
-        if let currentFilter {
+        if currentFilter != nil {
             filterButton.backgroundColor = .ypRed
             infoLabel.text = "Ничего не найдено"
             infoImageView.image = .emptySearchIcon

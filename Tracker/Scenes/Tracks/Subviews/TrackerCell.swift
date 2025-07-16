@@ -101,7 +101,11 @@ final class TrackerCell: UICollectionViewCell {
         trackerCardView.backgroundColor = viewModel.color
         emojiLabel.text = viewModel.emoji
         titleLabel.text = viewModel.title
-        streakLabel.text = streakCount.streakLabelText
+        streakLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("numberOfDays", comment: ""), streakCount
+        )
+
+//        streakLabel.text = streakCount.streakLabelText
         actionButton.tintColor = viewModel.color
     }
     
