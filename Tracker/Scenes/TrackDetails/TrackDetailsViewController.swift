@@ -217,7 +217,10 @@ final class TrackDetailsViewController: UIViewController {
             chosenCategory = categoryTitle
             createButton.setTitle("Сохранить", for: .normal)
             
-            streakLabel.text = trackerRecordStore.recordCount(for: tracker.id).streakLabelText
+            streakLabel.text = String.localizedStringWithFormat(
+                NSLocalizedString("numberOfDays", comment: ""),
+                trackerRecordStore.recordCount(for: tracker.id))
+            
             streakLabel.isHidden = false
             headerStackView.setCustomSpacing(40, after: streakLabel)
         }

@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Nikita Khon on 16.07.2025.
+  
+*/
+
+"stats_scene_title" = "Статистика";
+"tracker_scene_title" = "Трекеры";
+"filter_button_title" = "Фильтры";
