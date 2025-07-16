@@ -61,6 +61,8 @@
 		04ADE1C92DC90E8900B69482 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 04ADE1C82DC90E8900B69482 /* Assets.xcassets */; };
 		04ADE1CC2DC90E8900B69482 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 04ADE1CB2DC90E8900B69482 /* Base */; };
 		04BABD382E280CF7005D39FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 04BABD362E280CF7005D39FA /* Localizable.strings */; };
+		04BABD3C2E281E81005D39FA /* StatsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BABD3B2E281E81005D39FA /* StatsCell.swift */; };
+		04BABD412E282495005D39FA /* StatsType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BABD402E282495005D39FA /* StatsType.swift */; };
 		04C4B12D2E026C40009EC1CB /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04C4B12C2E026C40009EC1CB /* CoreDataManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -123,6 +125,8 @@
 		04ADE1CD2DC90E8900B69482 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04BABD372E280CF7005D39FA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		04BABD392E280CFC005D39FA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		04BABD3B2E281E81005D39FA /* StatsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsCell.swift; sourceTree = "<group>"; };
+		04BABD402E282495005D39FA /* StatsType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsType.swift; sourceTree = "<group>"; };
 		04C4B12C2E026C40009EC1CB /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -193,6 +197,8 @@
 		045AA15D2DFDAB92004A381E /* Stats */ = {
 			isa = PBXGroup;
 			children = (
+				04BABD422E282499005D39FA /* Models */,
+				04BABD3A2E281E25005D39FA /* Subviews */,
 				04AAFC6A2DCBAABD007AD0D1 /* StatsViewController.swift */,
 			);
 			path = Stats;
@@ -456,6 +462,22 @@
 			path = Tracker;
 			sourceTree = "<group>";
 		};
+		04BABD3A2E281E25005D39FA /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				04BABD3B2E281E81005D39FA /* StatsCell.swift */,
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
+		04BABD422E282499005D39FA /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				04BABD402E282495005D39FA /* StatsType.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		04C4B12E2E026D45009EC1CB /* Manager */ = {
 			isa = PBXGroup;
 			children = (
@@ -538,6 +560,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				045B85532E20242500AEA2A3 /* FilterListViewController.swift in Sources */,
+				04BABD3C2E281E81005D39FA /* StatsCell.swift in Sources */,
 				04735F582DF5FBD600184011 /* TrackerCategory.swift in Sources */,
 				046B1B962DFEAE3000A8CB79 /* PaddedTextField.swift in Sources */,
 				049DE0982E06AF8A0018E7F2 /* CategoryEditorType.swift in Sources */,
@@ -565,6 +588,7 @@
 				04AAFC692DCBA93B007AD0D1 /* TabBarController.swift in Sources */,
 				045EEC002DF9E9AF00D70774 /* TrackerCell.swift in Sources */,
 				04735F5A2DF5FE5900184011 /* TrackerRecord.swift in Sources */,
+				04BABD412E282495005D39FA /* StatsType.swift in Sources */,
 				046B1B912DFEA2E600A8CB79 /* TrackDetailsViewController.swift in Sources */,
 				045AA1622DFDEB8A004A381E /* AutoHeightTableView.swift in Sources */,
 				049DE09B2E06B33A0018E7F2 /* CategoryListRouter.swift in Sources */,
