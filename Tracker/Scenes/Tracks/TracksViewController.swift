@@ -99,6 +99,7 @@ final class TracksViewController: UIViewController {
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate = Date().dateOnly
     private var currentFilter: TrackerFilter?
+    private var filterWorkItem: DispatchWorkItem?
     
     // MARK: - Initializers
     
@@ -242,6 +243,7 @@ final class TracksViewController: UIViewController {
         searchController.searchBar.setValue("Отменить", forKey: "cancelButtonText")
         searchController.searchBar.tintColor = .ypBlue
         searchController.hidesNavigationBarDuringPresentation = false
+        searchController.searchResultsUpdater = self
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
@@ -587,5 +589,43 @@ extension TracksViewController: FilterListDelegate {
             infoLabel.text = "Что будем отслеживать?"
             infoImageView.image = .star
         }
+    }
+}
+
+// MARK: - UISearchResultsUpdating
+
+extension TracksViewController: UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        filterWorkItem?.cancel()
+        
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            
+            if let query = searchController.searchBar.text?.lowercased(), !query.isEmpty {
+                let filteredCategories = categories.compactMap { category -> TrackerCategory? in
+                    let filteredTrackers = category.trackers.filter { tracker in
+                        tracker.title.lowercased().contains(query)
+                    }
+                    
+                    return filteredTrackers.isEmpty ? nil
+                    : TrackerCategory(title: category.title, trackers: filteredTrackers)
+                }
+                
+                self.visibleCategories = filteredCategories
+                self.trackerCollectionView.reloadData()
+                
+                let isEmptyResult = visibleCategories.isEmpty
+                self.infoImageView.isHidden = !isEmptyResult
+                self.infoLabel.isHidden = !isEmptyResult
+                self.trackerCollectionView.isHidden = isEmptyResult
+                self.filterButton.isHidden = currentFilter == nil && isEmptyResult
+            } else {
+                self.reloadCollectionView()
+            }
+        }
+        
+        filterWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: workItem)
     }
 }
