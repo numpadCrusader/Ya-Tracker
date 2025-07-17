@@ -379,6 +379,18 @@ final class TracksViewController: UIViewController {
         let navController = UINavigationController(rootViewController: viewController)
         present(navController, animated: true)
     }
+    
+    private func updateInfoViewsForFiltering() {
+        filterButton.backgroundColor = .ypRed
+        infoLabel.text = "Ничего не найдено"
+        infoImageView.image = .emptySearchIcon
+    }
+    
+    private func updateInfoViewsForNormalState() {
+        filterButton.backgroundColor = .ypBlue
+        infoLabel.text = "Что будем отслеживать?"
+        infoImageView.image = .star
+    }
 }
 
 // MARK: - UICollectionViewDataSource
@@ -575,20 +587,13 @@ extension TracksViewController: FilterListDelegate {
                 currentFilter = filter
         }
         
-        updateUIForFiltering()
-        reloadCollectionView()
-    }
-    
-    private func updateUIForFiltering() {
         if currentFilter != nil {
-            filterButton.backgroundColor = .ypRed
-            infoLabel.text = "Ничего не найдено"
-            infoImageView.image = .emptySearchIcon
+            updateInfoViewsForFiltering()
         } else {
-            filterButton.backgroundColor = .ypBlue
-            infoLabel.text = "Что будем отслеживать?"
-            infoImageView.image = .star
+            updateInfoViewsForNormalState()
         }
+        
+        reloadCollectionView()
     }
 }
 
@@ -616,11 +621,15 @@ extension TracksViewController: UISearchResultsUpdating {
                 self.trackerCollectionView.reloadData()
                 
                 let isEmptyResult = visibleCategories.isEmpty
+                if isEmptyResult {
+                    self.updateInfoViewsForFiltering()
+                }
                 self.infoImageView.isHidden = !isEmptyResult
                 self.infoLabel.isHidden = !isEmptyResult
                 self.trackerCollectionView.isHidden = isEmptyResult
                 self.filterButton.isHidden = currentFilter == nil && isEmptyResult
             } else {
+                self.updateInfoViewsForNormalState()
                 self.reloadCollectionView()
             }
         }
