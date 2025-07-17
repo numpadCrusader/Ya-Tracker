@@ -66,6 +66,8 @@ final class StatsCell: UITableViewCell {
     // MARK: - Private Methods
     
     private func configure() {
+        contentView.backgroundColor = .ypWhite
+        
         addSubviews()
         addConstraints()
     }

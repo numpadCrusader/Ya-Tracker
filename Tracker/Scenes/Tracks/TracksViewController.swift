@@ -44,6 +44,7 @@ final class TracksViewController: UIViewController {
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.identifier)
         collectionView.contentInset.top = 24
         collectionView.contentInset.bottom = 60
+        collectionView.backgroundColor = .ypWhite
         
         collectionView.register(
             CategoryHeaderView.self,
@@ -76,7 +77,7 @@ final class TracksViewController: UIViewController {
         let button = UIButton(type: .custom)
         button.backgroundColor = .ypBlue
         button.setTitle(LocalizedStrings.filterButtonTitle, for: .normal)
-        button.setTitleColor(.ypWhite, for: .normal)
+        button.setTitleColor(.ypWhiteConst, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
@@ -209,7 +210,7 @@ final class TracksViewController: UIViewController {
     
     private func setupNavBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: .plusIcon.withRenderingMode(.alwaysOriginal),
+            image: .plusIcon.withTintColor(.ypBlack, renderingMode: .alwaysOriginal),
             style: .plain,
             target: self,
             action: #selector(addNewTrackButtonTapped))
