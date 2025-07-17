@@ -13,6 +13,15 @@ final class TracksSceneTests: XCTestCase {
 
     func testEmptyTracksViewController() {
         let viewController = TracksViewController()
-        assertSnapshot(of: viewController, as: .image)
+        
+        assertSnapshot(of: viewController, as: .image(on: .iPhoneX))
+    }
+    
+    func testFilledTracksViewController() {
+        let viewController = TracksViewController()
+        let _ = viewController.view
+        viewController.makeMockTrackers()
+        
+        assertSnapshot(of: viewController, as: .image(on: .iPhoneX))
     }
 }

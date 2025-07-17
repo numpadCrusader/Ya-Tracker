@@ -148,6 +148,13 @@ final class TracksViewController: UIViewController {
         present(navController, animated: true)
     }
     
+    // MARK: - Public Methods
+    
+    func makeMockTrackers() {
+        categories = MockTrackerProvider.makeMockTrackers()
+        reloadCollectionView()
+    }
+    
     // MARK: - Private Methods
     
     private func configure() {
