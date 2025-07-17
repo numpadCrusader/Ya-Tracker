@@ -77,6 +77,16 @@ final class EmojiSelectorView: UIView {
         }
     }
     
+    // MARK: - Public Methods
+    
+    func selectCell(with emoji: String) {
+        guard let index = emojiList.firstIndex(of: emoji) else { return }
+        
+        let indexPath = IndexPath(row: index, section: 0)
+        emojiCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+        delegate?.didSelectEmoji(emojiList[index])
+    }
+    
     // MARK: - Private Methods
     
     private func configure() {
@@ -165,25 +175,15 @@ extension EmojiSelectorView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard 
-            indexPath.row < emojiList.count,
-            let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
-        else {
-            return
-        }
+        guard indexPath.row < emojiList.count else { return }
         
-        cell.setIsSelected(true)
+        collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
         delegate?.didSelectEmoji(emojiList[indexPath.row])
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        guard
-            indexPath.row < emojiList.count,
-            let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell
-        else {
-            return
-        }
+        guard indexPath.row < emojiList.count else { return }
         
-        cell.setIsSelected(false)
+        collectionView.deselectItem(at: indexPath, animated: false)
     }
 }

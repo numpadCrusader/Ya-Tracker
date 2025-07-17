@@ -5,26 +5,44 @@
 //  Created by Nikita Khon on 17.06.2025.
 //
 
-import UIKit
+import Foundation
 import CoreData
 
+protocol TrackerRecordStoreDelegate: AnyObject {
+    func storeDidUpdate()
+}
+
 protocol TrackerRecordStoreProtocol: AnyObject {
+    var delegate: TrackerRecordStoreDelegate? { get set }
+    var trackerRecords: [TrackerRecordCoreData] { get }
+    
     func addRecord(_ record: TrackerRecord)
     func deleteRecord(_ record: TrackerRecord)
     func hasRecord(for trackerId: UUID, on date: Date) -> Bool
     func recordCount(for trackerId: UUID) -> Int
 }
 
-final class TrackerRecordStore: TrackerRecordStoreProtocol {
+final class TrackerRecordStore: NSObject, TrackerRecordStoreProtocol {
+    
+    // MARK: - Public Properties
+    
+    weak var delegate: TrackerRecordStoreDelegate?
+    
+    var trackerRecords: [TrackerRecordCoreData] {
+        fetchedResultsController?.fetchedObjects ?? []
+    }
     
     // MARK: - Private Properties
     
     private let context: NSManagedObjectContext
+    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>?
 
     // MARK: - Initializers
 
     init(context: NSManagedObjectContext = CoreDataManager.shared.context) {
         self.context = context
+        super.init()
+        setupFetchedResultsController()
     }
     
     // MARK: - Public Methods
@@ -81,5 +99,40 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         }
         
         return count
+    }
+    
+    // MARK: - Private Methods
+    
+    private func setupFetchedResultsController() {
+        let fetchRequest = TrackerRecordCoreData.fetchRequest()
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerRecordCoreData.date, ascending: true)
+        ]
+        
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        controller.delegate = self
+        fetchedResultsController = controller
+        
+        do {
+            try controller.performFetch()
+        } catch {
+            print("TrackerRecordStore Error: \(error)")
+        }
+    }
+}
+
+// MARK: - NSFetchedResultsControllerDelegate
+
+extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
+    
+    func controllerDidChangeContent(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>
+    ) {
+        delegate?.storeDidUpdate()
     }
 }

@@ -14,6 +14,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        YandexMetricaManager.shared.initialize()
         DaysValueTransformer.register()
         return true
     }

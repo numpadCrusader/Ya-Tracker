@@ -15,7 +15,7 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Visual Components
     
-    private lazy var trackerCardView: UIView = {
+    private(set) lazy var trackerCardView: UIView = {
         let borderColor: UIColor = .trackerCellGray
         
         let view = UIView()
@@ -43,11 +43,20 @@ final class TrackerCell: UICollectionViewCell {
         return label
     }()
     
+    private lazy var pinImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .pinIcon
+        imageView.contentMode = .center
+        imageView.isHidden = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
-        label.textColor = .ypWhite
+        label.textColor = .ypWhiteConst
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -92,13 +101,21 @@ final class TrackerCell: UICollectionViewCell {
         trackerCardView.backgroundColor = viewModel.color
         emojiLabel.text = viewModel.emoji
         titleLabel.text = viewModel.title
-        streakLabel.text = makeStreakLabelText(from: streakCount)
+        
+        streakLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("numberOfDays", comment: ""), 
+            streakCount)
+
         actionButton.tintColor = viewModel.color
     }
     
     func setIsDone(_ isDone: Bool) {
         let buttonImage: UIImage = isDone ? .trackerCellDoneIcon : .trackerCellPlusIcon
         actionButton.setImage(buttonImage, for: .normal)
+    }
+    
+    func setIsPinned(_ isPinned: Bool) {
+        pinImageView.isHidden = !isPinned
     }
     
     // MARK: - Actions
@@ -116,7 +133,7 @@ final class TrackerCell: UICollectionViewCell {
     
     private func addSubviews() {
         contentView.addSubviews(trackerCardView, streakLabel, actionButton)
-        trackerCardView.addSubviews(emojiView, titleLabel)
+        trackerCardView.addSubviews(emojiView, titleLabel, pinImageView)
         emojiView.addSubview(emojiLabel)
     }
     
@@ -141,6 +158,11 @@ final class TrackerCell: UICollectionViewCell {
         ])
         
         NSLayoutConstraint.activate([
+            pinImageView.topAnchor.constraint(equalTo: trackerCardView.topAnchor, constant: 12),
+            pinImageView.trailingAnchor.constraint(equalTo: trackerCardView.trailingAnchor, constant: -4)
+        ])
+        
+        NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: trackerCardView.leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: trackerCardView.trailingAnchor, constant: -12),
             titleLabel.bottomAnchor.constraint(equalTo: trackerCardView.bottomAnchor, constant: -12)
@@ -156,20 +178,5 @@ final class TrackerCell: UICollectionViewCell {
             actionButton.topAnchor.constraint(equalTo: trackerCardView.bottomAnchor, constant: 8),
             actionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12)
         ])
-    }
-    
-    private func makeStreakLabelText(from number: Int) -> String {
-        let suffix =
-        switch number % 100 {
-            case 11...14: "дней"
-                
-            default: switch number % 10 {
-                case 1: "день"
-                case 2...4: "дня"
-                default: "дней"
-            }
-        }
-        
-        return "\(number) \(suffix)"
     }
 }

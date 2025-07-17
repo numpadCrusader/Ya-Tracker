@@ -77,6 +77,16 @@ final class ColorSelectorView: UIView {
         }
     }
     
+    // MARK: - Public Methods
+    
+    func selectCell(with color: UIColor) {
+        guard let index = colorList.firstIndex(where: { $0.isEqualToColor(color) }) else { return }
+
+        let indexPath = IndexPath(row: index, section: 0)
+        colorCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+        delegate?.didSelectColor(colorList[index])
+    }
+    
     // MARK: - Private Methods
     
     private func configure() {
@@ -165,25 +175,15 @@ extension ColorSelectorView: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard
-            indexPath.row < colorList.count,
-            let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
-        else {
-            return
-        }
+        guard indexPath.row < colorList.count else { return }
         
-        cell.setIsSelected(true)
+        collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
         delegate?.didSelectColor(colorList[indexPath.row])
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        guard
-            indexPath.row < colorList.count,
-            let cell = collectionView.cellForItem(at: indexPath) as? ColorCell
-        else {
-            return
-        }
+        guard indexPath.row < colorList.count else { return }
         
-        cell.setIsSelected(false)
+        collectionView.deselectItem(at: indexPath, animated: false)
     }
 }

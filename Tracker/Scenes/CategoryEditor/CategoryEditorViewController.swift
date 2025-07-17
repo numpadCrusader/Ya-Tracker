@@ -126,7 +126,7 @@ final class CategoryEditorViewController: UIViewController {
         
         switch editorType {
             case .new: 
-                trackerCategoryStore.addNewCategory(title: title)
+                trackerCategoryStore.addNewCategory(with: title)
                 
             case .edit(let initialCategoryTitle):
                 trackerCategoryStore.updateCategory(with: initialCategoryTitle, to: title)

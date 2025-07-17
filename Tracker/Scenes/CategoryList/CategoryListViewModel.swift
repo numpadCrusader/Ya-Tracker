@@ -71,7 +71,7 @@ final class CategoryListViewModel {
         tableSelectBinding?(indexPath)
     }
     
-    func didAttempToDeleteCell(at indexPath: IndexPath) {
+    func didAttemptToDeleteCell(at indexPath: IndexPath) {
         tableDeleteAttemptBinding?(indexPath)
     }
     
@@ -96,7 +96,10 @@ final class CategoryListViewModel {
     // MARK: - Private Methods
     
     private func getCategoriesFromStore() -> [CategoryCellViewModel] {
-        let categories = trackerCategoryStore.trackerCategories
+        let categories = trackerCategoryStore.trackerCategories.filter {
+            $0.title != GlobalConstants.pinCategory
+        }
+        
         let lastIndex = categories.count - 1
         
         return categories.enumerated().compactMap { (index, entity) in

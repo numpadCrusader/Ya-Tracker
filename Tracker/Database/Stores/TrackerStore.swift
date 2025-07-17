@@ -5,11 +5,15 @@
 //  Created by Nikita Khon on 17.06.2025.
 //
 
-import UIKit
+import Foundation
 import CoreData
 
 protocol TrackerStoreProtocol {
     func addNewTracker(_ tracker: Tracker, toCategory title: String)
+    func deleteTracker(_ tracker: Tracker)
+    func updateTracker(with newTracker: Tracker, toCategory newTitle: String)
+    func pinTracker(_ tracker: Tracker)
+    func unpinTracker(_ tracker: Tracker)
 }
 
 final class TrackerStore: TrackerStoreProtocol {
@@ -27,17 +31,7 @@ final class TrackerStore: TrackerStoreProtocol {
     // MARK: - Public Methods
     
     func addNewTracker(_ tracker: Tracker, toCategory title: String) {
-        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
-        
-        let trackerCategory: TrackerCategoryCoreData
-        
-        if let existingCategory = try? context.fetch(fetchRequest).first {
-            trackerCategory = existingCategory
-        } else {
-            trackerCategory = TrackerCategoryCoreData(context: context)
-            trackerCategory.title = title
-        }
+        let trackerCategory = fetchOrCreateCategory(withTitle: title)
         
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.id = tracker.id
@@ -51,6 +45,108 @@ final class TrackerStore: TrackerStoreProtocol {
             try context.save()
         } catch {
             print("TrackerStore Error: \(error)")
+        }
+    }
+    
+    func deleteTracker(_ tracker: Tracker) {
+        do {
+            guard let existingTracker = fetchTracker(by: tracker.id) else {
+                print("TrackerStore Error: Could not find tracker to delete")
+                return
+            }
+            
+            context.delete(existingTracker)
+            try context.save()
+        } catch {
+            print("TrackerStore Error: \(error)")
+        }
+    }
+    
+    func updateTracker(with newTracker: Tracker, toCategory newTitle: String) {
+        do {
+            guard let oldTracker = fetchTracker(by: newTracker.id) else {
+                print("TrackerStore Error: Update conditions are not met")
+                return
+            }
+            
+            oldTracker.title = newTracker.title
+            oldTracker.emoji = newTracker.emoji
+            oldTracker.color = newTracker.color
+            oldTracker.schedule = newTracker.schedule as NSObject
+            
+            if oldTracker.category?.title == newTitle {
+                oldTracker.category?.willChangeValue(forKey: "trackers")
+                oldTracker.category?.didChangeValue(forKey: "trackers")
+            } else {
+                let trackerCategory = fetchOrCreateCategory(withTitle: newTitle)
+                oldTracker.category = trackerCategory
+            }
+            
+            try context.save()
+        } catch {
+            print("TrackerStore Error: \(error)")
+        }
+    }
+    
+    func pinTracker(_ tracker: Tracker) {
+        do {
+            guard
+                let existingTracker = fetchTracker(by: tracker.id),
+                let currentCategoryTitle = existingTracker.category?.title
+            else {
+                print("TrackerStore Error: Pin conditions are not met")
+                return
+            }
+            
+            existingTracker.originCategoryTitle = currentCategoryTitle
+            let trackerCategory = fetchOrCreateCategory(withTitle: GlobalConstants.pinCategory)
+            existingTracker.category = trackerCategory
+            
+            try context.save()
+        } catch {
+            print("TrackerStore Error: \(error)")
+        }
+    }
+    
+    func unpinTracker(_ tracker: Tracker) {
+        do {
+            guard
+                let existingTracker = fetchTracker(by: tracker.id),
+                let originCategoryTitle = existingTracker.originCategoryTitle
+            else {
+                print("TrackerStore Error: Unpin conditions are not met")
+                return
+            }
+            
+            let trackerCategory = fetchOrCreateCategory(withTitle: originCategoryTitle)
+            existingTracker.category = trackerCategory
+            existingTracker.originCategoryTitle = nil
+            
+            try context.save()
+        } catch {
+            print("TrackerStore Error: \(error)")
+        }
+    }
+    
+    // MARK: - Private Methods
+    
+    private func fetchTracker(by id: UUID) -> TrackerCoreData? {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        return try? context.fetch(request).first
+    }
+    
+    private func fetchOrCreateCategory(withTitle title: String) -> TrackerCategoryCoreData {
+        let request = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "title == %@", title)
+        
+        if let category = try? context.fetch(request).first {
+            return category
+        } else {
+            let newCategory = TrackerCategoryCoreData(context: context)
+            newCategory.title = title
+            newCategory.sortPriority = title == GlobalConstants.pinCategory ? 0 : 1
+            return newCategory
         }
     }
 }

@@ -139,6 +139,16 @@ final class TrackDetailsViewController: UIViewController {
         return button
     }()
     
+    private lazy var streakLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .ypBlack
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 32, weight: .bold)
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     // MARK: - Public Properties
     
     weak var delegate: TrackDetailsDelegate?
@@ -146,9 +156,10 @@ final class TrackDetailsViewController: UIViewController {
     // MARK: - Private Properties
     
     private let trackerStore: TrackerStoreProtocol
+    private let trackerRecordStore: TrackerRecordStoreProtocol
     
-    private let trackerType: TrackerType
-    private let trackerDetails: [TrackerType.Detail]
+    private let trackerDetailsMode: TrackerDetailsMode
+    private let trackerDetails: [TrackerDetailsMode.DetailField]
     
     private var chosenCategory: String? {
         didSet {
@@ -160,18 +171,30 @@ final class TrackDetailsViewController: UIViewController {
             isCreateButtonEnabled()
         }
     }
-    private var chosenEmoji: String?
-    private var chosenColor: UIColor?
+    private var chosenEmoji: String? {
+        didSet {
+            isCreateButtonEnabled()
+        }
+    }
+    private var chosenColor: UIColor? {
+        didSet {
+            isCreateButtonEnabled()
+        }
+    }
 
     // MARK: - Initializers
     
     init(
-        trackerType: TrackerType,
-        trackerStore: TrackerStoreProtocol = TrackerStore()
+        trackerDetailsMode: TrackerDetailsMode,
+        trackerStore: TrackerStoreProtocol = TrackerStore(),
+        trackerRecordStore: TrackerRecordStoreProtocol = TrackerRecordStore()
     ) {
-        self.trackerType = trackerType
-        trackerDetails = trackerType.details
+        self.trackerDetailsMode = trackerDetailsMode
+        trackerDetails = trackerDetailsMode.detailFields
+        
         self.trackerStore = trackerStore
+        self.trackerRecordStore = trackerRecordStore
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -185,6 +208,22 @@ final class TrackDetailsViewController: UIViewController {
         super.viewDidLoad()
         configure()
         trackerDetailsTableView.reloadData()
+        
+        if case let .edit(tracker, categoryTitle) = trackerDetailsMode {
+            trackTitleTextField.text = tracker.title
+            emojiSelectorView.selectCell(with: tracker.emoji)
+            colorSelectorView.selectCell(with: tracker.color)
+            chosenWeekDays = tracker.schedule
+            chosenCategory = categoryTitle
+            createButton.setTitle("Сохранить", for: .normal)
+            
+            streakLabel.text = String.localizedStringWithFormat(
+                NSLocalizedString("numberOfDays", comment: ""),
+                trackerRecordStore.recordCount(for: tracker.id))
+            
+            streakLabel.isHidden = false
+            headerStackView.setCustomSpacing(40, after: streakLabel)
+        }
     }
     
     // MARK: - Actions
@@ -194,20 +233,19 @@ final class TrackDetailsViewController: UIViewController {
     }
     
     @objc private func createButtonTapped() {
-        let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
-        let emoji = chosenEmoji ?? "🤖"
-        let color = chosenColor ?? .systemIndigo
         let chosenCategory = chosenCategory ?? "Категория"
         
-        let tracker = Tracker(
-            id: UUID(),
-            title: trackTitle,
-            color: color,
-            emoji: emoji,
-            schedule: chosenWeekDays)
-        
-        trackerStore.addNewTracker(tracker, toCategory: chosenCategory)
-        delegate?.didFinishAddingTrack()
+        switch trackerDetailsMode {
+            case .new:
+                let tracker = makeTracker(with: UUID())
+                trackerStore.addNewTracker(tracker, toCategory: chosenCategory)
+                delegate?.didFinishAddingTrack()
+                
+            case .edit(let oldTracker, _):
+                let updatedTracker = makeTracker(with: oldTracker.id)
+                trackerStore.updateTracker(with: updatedTracker, toCategory: chosenCategory)
+                dismiss(animated: true)
+        }
     }
     
     @objc private func textFieldDidChange() {
@@ -225,7 +263,7 @@ final class TrackDetailsViewController: UIViewController {
     // MARK: - Private Methods
     
     private func configure() {
-        title = trackerType.title
+        title = trackerDetailsMode.title
         view.backgroundColor = .ypWhite
         
         addSubviews()
@@ -243,7 +281,7 @@ final class TrackDetailsViewController: UIViewController {
             colorSelectorView,
             botButtonStackView)
         
-        headerStackView.addArrangedSubviews(trackTitleTextField, warningLabel)
+        headerStackView.addArrangedSubviews(streakLabel, trackTitleTextField, warningLabel)
         botButtonStackView.addArrangedSubviews(cancelButton, createButton)
     }
     
@@ -325,7 +363,7 @@ final class TrackDetailsViewController: UIViewController {
     private func isCreateButtonEnabled() {
         let hasTrackTitle = !(trackTitleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty ?? true)
         let hasChosenCategory = chosenCategory != nil
-        let hasChosenWeekDays = trackerType == .task ? true : !chosenWeekDays.isEmpty
+        let hasChosenWeekDays = trackerDetailsMode.trackerType == .task ? true : !chosenWeekDays.isEmpty
         let hasChosenEmoji = chosenEmoji != nil
         let hasChosenColor = chosenColor != nil
         
@@ -354,6 +392,19 @@ final class TrackDetailsViewController: UIViewController {
             self?.warningLabel.isHidden = isHidden
         }
     }
+    
+    private func makeTracker(with uuid: UUID) -> Tracker {
+        let trackTitle = trackTitleTextField.text?.trimmingCharacters(in: .whitespaces) ?? "Трекер"
+        let emoji = chosenEmoji ?? "🤖"
+        let color = chosenColor ?? .systemIndigo
+        
+        return Tracker(
+            id: uuid,
+            title: trackTitle,
+            color: color,
+            emoji: emoji,
+            schedule: chosenWeekDays)
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -373,6 +424,12 @@ extension TrackDetailsViewController: UITableViewDataSource {
         }
         
         let trackerDetail = trackerDetails[indexPath.row]
+        
+        if trackerDetail == .category {
+            cell.setDetailSubtitle(chosenCategory ?? "")
+        } else if trackerDetail == .schedule {
+            cell.setDetailSubtitle(makeChosenDaysString(from: chosenWeekDays))
+        }
         
         cell.update(
             with: trackerDetail,
@@ -402,15 +459,7 @@ extension TrackDetailsViewController: ScheduleDelegate {
     
     func didFinish(with days: Set<WeekDay>) {
         chosenWeekDays = days
-        
-        guard 
-            let index = trackerDetails.firstIndex(where: { $0 == .schedule}),
-            let cell = trackerDetailsTableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TrackDetailCell
-        else {
-            return
-        }
-        
-        cell.setDetailSubtitle(makeChosenDaysString(from: days))
+        trackerDetailsTableView.reloadData()
     }
     
     private func makeChosenDaysString(from days: Set<WeekDay>) -> String {
@@ -431,15 +480,7 @@ extension TrackDetailsViewController: CategoryListViewModelDelegate {
     
     func didFinish(with categoryTitle: String) {
         chosenCategory = categoryTitle
-        
-        guard
-            let index = trackerDetails.firstIndex(where: { $0 == .category}),
-            let cell = trackerDetailsTableView.cellForRow(at: IndexPath(row: index, section: 0)) as? TrackDetailCell
-        else {
-            return
-        }
-        
-        cell.setDetailSubtitle(categoryTitle)
+        trackerDetailsTableView.reloadData()
     }
 }
 
@@ -474,7 +515,6 @@ extension TrackDetailsViewController: EmojiSelectorViewDelegate {
     
     func didSelectEmoji(_ emoji: String) {
         chosenEmoji = emoji
-        isCreateButtonEnabled()
     }
 }
 
@@ -484,6 +524,5 @@ extension TrackDetailsViewController: ColorSelectorViewDelegate {
     
     func didSelectColor(_ color: UIColor) {
         chosenColor = color
-        isCreateButtonEnabled()
     }
 }

@@ -5,7 +5,7 @@
 //  Created by Nikita Khon on 17.06.2025.
 //
 
-import UIKit
+import Foundation
 import CoreData
 
 protocol TrackerCategoryStoreDelegate: AnyObject {
@@ -16,7 +16,7 @@ protocol TrackerCategoryStoreProtocol {
     var trackerCategories: [TrackerCategoryCoreData] { get }
     var delegate: TrackerCategoryStoreDelegate? { get set }
     
-    func addNewCategory(title: String)
+    func addNewCategory(with title: String)
     func deleteCategory(with title: String)
     func updateCategory(with title: String, to newTitle: String)
 }
@@ -46,17 +46,17 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     
     // MARK: - Public Methods
     
-    func addNewCategory(title: String) {
-        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
-        
+    func addNewCategory(with title: String) {
         do {
-            if let _ = try context.fetch(fetchRequest).first {
+            if let _ = fetchCategory(by: title) {
+                print("TrackerCategoryStore Error: Category with title \(title) already exists")
                 return
             }
             
             let newCategory = TrackerCategoryCoreData(context: context)
             newCategory.title = title
+            newCategory.sortPriority = title == GlobalConstants.pinCategory ? 0 : 1
+            
             try context.save()
         } catch {
             print("TrackerCategoryStore Error: \(error)")
@@ -64,37 +64,33 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     }
     
     func deleteCategory(with title: String) {
-        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
-        
         do {
-            if let category = try context.fetch(fetchRequest).first {
-                context.delete(category)
-                try context.save()
+            guard let category = fetchCategory(by: title) else {
+                print("TrackerCategoryStore Error: Could not find category to delete")
+                return
             }
+            
+            context.delete(category)
+            try context.save()
         } catch {
             print("TrackerCategoryStore Error: \(error)")
         }
     }
     
     func updateCategory(with title: String, to newTitle: String) {
-        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
-        fetchRequest.fetchLimit = 1
-        
-        let duplicateCheckRequest = TrackerCategoryCoreData.fetchRequest()
-        duplicateCheckRequest.predicate = NSPredicate(format: "title == %@", newTitle)
-        duplicateCheckRequest.fetchLimit = 1
-        
         do {
-            if let _ = try context.fetch(duplicateCheckRequest).first {
+            if let _ = fetchCategory(by: newTitle) {
+                print("TrackerCategoryStore Update Error: Category with title \(title) already exists")
                 return
             }
             
-            if let category = try context.fetch(fetchRequest).first {
-                category.title = newTitle
-                try context.save()
+            guard let category = fetchCategory(by: title) else {
+                print("TrackerCategoryStore Update Error: Could not find category to update")
+                return
             }
+            
+            category.title = newTitle
+            try context.save()
         } catch {
             print("TrackerCategoryStore Error: \(error)")
         }
@@ -105,6 +101,7 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
     private func setupFetchedResultsController() {
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerCategoryCoreData.sortPriority, ascending: true),
             NSSortDescriptor(keyPath: \TrackerCategoryCoreData.title, ascending: true)
         ]
         
@@ -122,6 +119,12 @@ final class TrackerCategoryStore: NSObject, TrackerCategoryStoreProtocol {
         } catch {
             print("TrackerCategoryStore Error: \(error)")
         }
+    }
+    
+    private func fetchCategory(by title: String) -> TrackerCategoryCoreData? {
+        let request = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "title == %@", title)
+        return try? context.fetch(request).first
     }
 }
 
