@@ -91,6 +91,7 @@ final class TracksViewController: UIViewController {
     private var trackerCategoryStore: TrackerCategoryStoreProtocol
     private let trackerRecordStore: TrackerRecordStoreProtocol
     private let trackerStore: TrackerStoreProtocol
+    private let yandexMetricaManager = YandexMetricaManager.shared
     
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
@@ -128,9 +129,21 @@ final class TracksViewController: UIViewController {
         trackerCategoryStore.delegate = self
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        yandexMetricaManager.reportEvent(event: .open, item: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        yandexMetricaManager.reportEvent(event: .close, item: nil)
+    }
+    
     // MARK: - Actions
     
     @objc private func addNewTrackButtonTapped() {
+        yandexMetricaManager.reportEvent(event: .tap, item: "add_track")
+        
         let viewController = AddTrackViewController()
         viewController.delegate = self
         let navController = UINavigationController(rootViewController: viewController)
@@ -143,6 +156,8 @@ final class TracksViewController: UIViewController {
     }
     
     @objc private func filterButtonTapped() {
+        yandexMetricaManager.reportEvent(event: .tap, item: "filter")
+        
         let viewController = FilterListViewController(chosenFilter: currentFilter)
         viewController.delegate = self
         let navController = UINavigationController(rootViewController: viewController)
@@ -305,6 +320,8 @@ final class TracksViewController: UIViewController {
     }
     
     private func deleteTracker(at indexPath: IndexPath) {
+        yandexMetricaManager.reportEvent(event: .tap, item: "delete")
+        
         let sectionIndex = indexPath.section
         let rowIndex = indexPath.row
         
@@ -337,6 +354,8 @@ final class TracksViewController: UIViewController {
     }
     
     private func editTracker(at indexPath: IndexPath) {
+        yandexMetricaManager.reportEvent(event: .tap, item: "edit")
+        
         let sectionIndex = indexPath.section
         let rowIndex = indexPath.row
         
@@ -488,6 +507,8 @@ extension TracksViewController: UICollectionViewDelegateFlowLayout {
 extension TracksViewController: TrackerCellDelegate {
     
     func didTapActionButton(_ cell: TrackerCell) {
+        yandexMetricaManager.reportEvent(event: .tap, item: "track")
+        
         guard
             let indexPath = trackerCollectionView.indexPath(for: cell),
             indexPath.section < visibleCategories.count,

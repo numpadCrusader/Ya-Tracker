@@ -48,6 +48,7 @@
 		0470B2082E28CD3100BD79E8 /* YandexMobileMetrica in Frameworks */ = {isa = PBXBuildFile; productRef = 0470B2072E28CD3100BD79E8 /* YandexMobileMetrica */; };
 		0470B20A2E28CD3100BD79E8 /* YandexMobileMetricaCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 0470B2092E28CD3100BD79E8 /* YandexMobileMetricaCrashes */; };
 		0470B20D2E28CE5400BD79E8 /* YandexMetricaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0470B20C2E28CE5400BD79E8 /* YandexMetricaManager.swift */; };
+		0470B21A2E28D32E00BD79E8 /* YandexMetricaEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0470B2192E28D32E00BD79E8 /* YandexMetricaEvent.swift */; };
 		04735F542DF5FA8900184011 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F532DF5FA8900184011 /* Tracker.swift */; };
 		04735F562DF5FB4200184011 /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F552DF5FB4200184011 /* WeekDay.swift */; };
 		04735F582DF5FBD600184011 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04735F572DF5FBD600184011 /* TrackerCategory.swift */; };
@@ -122,6 +123,7 @@
 		0470B1F42E28AF2E00BD79E8 /* TracksSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksSceneTests.swift; sourceTree = "<group>"; };
 		0470B1FA2E28B5C900BD79E8 /* MockTrackerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTrackerProvider.swift; sourceTree = "<group>"; };
 		0470B20C2E28CE5400BD79E8 /* YandexMetricaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexMetricaManager.swift; sourceTree = "<group>"; };
+		0470B2192E28D32E00BD79E8 /* YandexMetricaEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YandexMetricaEvent.swift; sourceTree = "<group>"; };
 		04735F532DF5FA8900184011 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		04735F552DF5FB4200184011 /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
 		04735F572DF5FBD600184011 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
@@ -419,9 +421,18 @@
 		0470B20B2E28CE3C00BD79E8 /* YandexMetrica */ = {
 			isa = PBXGroup;
 			children = (
+				0470B2162E28D2F000BD79E8 /* Models */,
 				0470B20C2E28CE5400BD79E8 /* YandexMetricaManager.swift */,
 			);
 			path = YandexMetrica;
+			sourceTree = "<group>";
+		};
+		0470B2162E28D2F000BD79E8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0470B2192E28D32E00BD79E8 /* YandexMetricaEvent.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		04735F522DF5F8F000184011 /* Models */ = {
@@ -655,6 +666,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				045B85532E20242500AEA2A3 /* FilterListViewController.swift in Sources */,
+				0470B21A2E28D32E00BD79E8 /* YandexMetricaEvent.swift in Sources */,
 				04BABD3C2E281E81005D39FA /* StatsCell.swift in Sources */,
 				04735F582DF5FBD600184011 /* TrackerCategory.swift in Sources */,
 				046B1B962DFEAE3000A8CB79 /* PaddedTextField.swift in Sources */,
