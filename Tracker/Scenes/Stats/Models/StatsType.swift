@@ -7,12 +7,18 @@
 
 import Foundation
 
-enum StatsType: CaseIterable {
-    case totalDone
+enum StatsType {
+    case totalDone(Int)
     
     var title: String {
         switch self {
             case .totalDone: "Трекеров завершено"
+        }
+    }
+    
+    var count: Int {
+        switch self {
+            case .totalDone(let count): count
         }
     }
 }

@@ -23,3 +23,17 @@ extension TrackerRecord: Hashable {
         return lhs.trackerId == rhs.trackerId && lhs.date == rhs.date
     }
 }
+
+extension TrackerRecord {
+    
+    init?(from entity: TrackerRecordCoreData) {
+        guard
+            let trackerId = entity.trackerId,
+            let date = entity.date
+        else {
+            return nil
+        }
+        
+        self = TrackerRecord(trackerId: trackerId, date: date)
+    }
+}

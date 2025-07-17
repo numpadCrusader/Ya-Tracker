@@ -58,8 +58,8 @@ final class StatsCell: UITableViewCell {
     
     // MARK: - Public Methods
     
-    func update(with stat: StatsType, count: String) {
-        counterLabel.text = count
+    func update(with stat: StatsType) {
+        counterLabel.text = "\(stat.count)"
         descriptionLabel.text = stat.title
     }
     

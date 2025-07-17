@@ -52,13 +52,32 @@ final class StatsViewController: UIViewController {
     
     // MARK: - Private Properties
     
-    private let visibleStats = StatsType.allCases
+    private let trackerRecordStore: TrackerRecordStoreProtocol
+    
+    private var visibleStats: [StatsType] = []
+    private var trackerRecords: [TrackerRecord] = []
+    
+    // MARK: - Initializers
+    
+    init(trackerRecordStore: TrackerRecordStoreProtocol = TrackerRecordStore()) {
+        self.trackerRecordStore = trackerRecordStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - UIViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
+        
+        trackerRecords = getRecordsFromStore()
+        reloadTableView()
+        
+        trackerRecordStore.delegate = self
     }
     
     // MARK: - Private Methods
@@ -105,6 +124,24 @@ final class StatsViewController: UIViewController {
             tabBarSeparatorView.heightAnchor.constraint(equalToConstant: 0.5)
         ])
     }
+    
+    private func getRecordsFromStore() -> [TrackerRecord] {
+        trackerRecordStore.trackerRecords.compactMap {
+            TrackerRecord(from: $0)
+        }
+    }
+    
+    private func reloadTableView() {
+        let doneTrackerCount = trackerRecords.count
+        
+        visibleStats = doneTrackerCount > 0 ? [.totalDone(doneTrackerCount)] : []
+        statsTableView.reloadData()
+        
+        let isEmptyResult = visibleStats.isEmpty
+        infoImageView.isHidden = !isEmptyResult
+        infoLabel.isHidden = !isEmptyResult
+        statsTableView.isHidden = isEmptyResult
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -114,7 +151,7 @@ extension StatsViewController: UITableViewDataSource {
     func numberOfSections(
         in tableView: UITableView
     ) -> Int {
-        10
+        visibleStats.count
     }
 
     func tableView(
@@ -135,8 +172,7 @@ extension StatsViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-//        let stat = visibleStats[indexPath.row]
-        cell.update(with: .totalDone, count: "0")
+        cell.update(with: visibleStats[indexPath.row])
         
         return cell
     }
@@ -160,5 +196,15 @@ extension StatsViewController: UITableViewDelegate {
         let spacer = UIView()
         spacer.backgroundColor = .clear
         return spacer
+    }
+}
+
+// MARK: - TrackerRecordStoreDelegate
+
+extension StatsViewController: TrackerRecordStoreDelegate {
+    
+    func storeDidUpdate() {
+        trackerRecords = getRecordsFromStore()
+        reloadTableView()
     }
 }
